@@ -171,8 +171,21 @@
 </div>
 
 <script>
+  (function() {
+    const correct = "mckenna";
+    const stored = sessionStorage.getItem("dashboard_auth");
+    if (stored !== correct) {
+      const pwd = prompt("Enter password to access dashboard:");
+      if (pwd !== correct) {
+        document.documentElement.innerHTML = "<div style='font-family:sans-serif;padding:40px;color:#888'>Incorrect password.</div>";
+        return;
+      }
+      sessionStorage.setItem("dashboard_auth", correct);
+    }
+  })();
+</script>
+<script>
 const DATA = [
-  // ── TO BUY — NEED IT ──────────────────────────────────────
   { id:1,  name:"Living room couch",            type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
   { id:2,  name:"Living room console table",    type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
   { id:3,  name:"Living room coffee table",     type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
