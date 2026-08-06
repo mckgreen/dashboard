@@ -3,161 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>McKenna's Dashboard</title>
+<title>House Reno</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f0ece4;
-    color: #2c2820;
+    background: #f5f0e8;
+    color: #2c2416;
     min-height: 100vh;
   }
 
-  header {
-    padding: 28px 24px 16px;
-    background: #e8e2d8;
-    border-bottom: 1px solid #d8d0c4;
+  /* AUTH */
+  #auth-screen {
+    position: fixed; inset: 0; background: #f5f0e8;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 100;
   }
-  header h1 { font-size: 22px; font-weight: 700; color: #1e1a14; letter-spacing: -0.4px; }
-  header p { font-size: 13px; color: #8a7e6e; margin-top: 3px; }
+  #auth-screen h1 { font-size: 22px; font-weight: 700; color: #2c2416; }
+  #auth-screen p { font-size: 14px; color: #8a7a5e; }
+  #auth-input {
+    padding: 12px 16px; border: 1.5px solid #d4c8b0; border-radius: 10px;
+    font-size: 16px; width: 240px; background: #fff; outline: none; text-align: center;
+  }
+  #auth-input:focus { border-color: #8a7a5e; }
+  #auth-btn {
+    padding: 12px 32px; background: #2c2416; color: #f5f0e8; border: none;
+    border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 240px;
+  }
+  #auth-error { font-size: 13px; color: #c05030; display: none; }
+
+  /* HEADER */
+  header {
+    background: #ece6da; border-bottom: 1px solid #d8cebc;
+    padding: 20px 20px 0;
+  }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  header h1 { font-size: 20px; font-weight: 700; color: #1e1a10; letter-spacing: -0.3px; }
+  header p { font-size: 12px; color: #9a8a6a; margin-top: 2px; }
+  .budget-pill {
+    background: #e8f0e0; border: 1px solid #c0d4a8; border-radius: 20px;
+    padding: 4px 12px; font-size: 12px; font-weight: 600; color: #3a6020;
+  }
 
   /* TABS */
-  .tabs { display: flex; gap: 6px; padding: 16px 24px 0; overflow-x: auto; scrollbar-width: none; background: #e8e2d8; }
+  .tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
-    padding: 8px 16px; border-radius: 22px; font-size: 13px; font-weight: 500;
-    cursor: pointer; border: 1.5px solid transparent; white-space: nowrap;
-    transition: all 0.15s; background: #ddd7cc; color: #7a6e5e;
+    padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer;
+    border: none; background: transparent; color: #8a7a5e; white-space: nowrap;
+    border-bottom: 2.5px solid transparent; transition: all 0.15s;
   }
-  .tab:hover { color: #2c2820; background: #d4cec4; }
-  .tab.active { background: #2c2820; color: #f0ece4; border-color: #2c2820; }
+  .tab:hover { color: #2c2416; }
+  .tab.active { color: #2c2416; border-bottom-color: #2c2416; font-weight: 600; }
 
-  /* ROOM FILTERS */
-  .room-filters { display: flex; gap: 6px; padding: 12px 24px; overflow-x: auto; scrollbar-width: none; background: #e8e2d8; border-bottom: 1px solid #d8d0c4; }
-  .room-filters::-webkit-scrollbar { display: none; }
+  /* ROOM FILTER */
+  .room-bar {
+    background: #ece6da; border-bottom: 1px solid #d8cebc;
+    display: flex; gap: 6px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none;
+  }
+  .room-bar::-webkit-scrollbar { display: none; }
   .room-btn {
     padding: 5px 13px; border-radius: 14px; font-size: 12px; font-weight: 500;
-    cursor: pointer; border: 1.5px solid #cdc8be; background: transparent;
-    color: #8a7e6e; white-space: nowrap; transition: all 0.15s;
+    cursor: pointer; border: 1.5px solid #ccc4b0; background: transparent;
+    color: #8a7a5e; white-space: nowrap; transition: all 0.15s;
   }
-  .room-btn:hover { color: #2c2820; border-color: #aaa49a; }
-  .room-btn.active { background: #2c2820; color: #f0ece4; border-color: #2c2820; }
+  .room-btn:hover { color: #2c2416; border-color: #aaa090; }
+  .room-btn.active { background: #2c2416; color: #f5f0e8; border-color: #2c2416; }
 
   /* STATS */
-  .stats { display: flex; gap: 10px; padding: 20px 24px 0; }
-  .stat {
-    border-radius: 12px; padding: 12px 16px; flex: 1; text-align: center;
-    border: 1.5px solid transparent;
-  }
-  .stat.s-remain { background: #e8dfd0; border-color: #d4c8b4; }
-  .stat.s-need    { background: #fde8e0; border-color: #f0c8b8; }
-  .stat.s-want    { background: #e0e8f8; border-color: #c0d0ee; }
-  .stat.s-done    { background: #e0f0e8; border-color: #b8dfc8; }
-  .stat .num { font-size: 24px; font-weight: 700; color: #1e1a14; }
-  .stat .label { font-size: 11px; font-weight: 500; margin-top: 2px; color: #7a6e5e; }
+  .stats { display: flex; gap: 10px; padding: 16px 20px 0; }
+  .stat { border-radius: 12px; padding: 12px 14px; flex: 1; text-align: center; border: 1.5px solid transparent; }
+  .stat.s-rem  { background: #ede7db; border-color: #d8cebc; }
+  .stat.s-prog { background: #fff3e0; border-color: #f0d8a8; }
+  .stat.s-need { background: #fde8e0; border-color: #f0c8b0; }
+  .stat.s-done { background: #e4f0da; border-color: #b8d8a0; }
+  .stat .num { font-size: 22px; font-weight: 700; color: #1e1a10; }
+  .stat .lbl { font-size: 10px; font-weight: 600; color: #8a7a5e; margin-top: 2px; letter-spacing: 0.3px; }
 
   /* CONTENT */
-  .content { padding: 0 24px 40px; }
+  .content { padding: 8px 20px 40px; }
 
-  .section-title {
-    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: #9a8e7e; margin: 24px 0 10px; padding-bottom: 8px;
-    border-bottom: 1.5px solid #ddd7cc;
+  /* PHASE HEADERS */
+  .phase {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    color: #7a6a4e; margin: 20px 0 8px; padding-bottom: 8px;
+    border-bottom: 1.5px solid #ddd4c0;
   }
-
-  /* PROJECT GROUP HEADERS (for todo tab) */
-  .project-header {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 13px; font-weight: 600; color: #2c2820;
-    margin: 20px 0 8px; padding: 8px 12px; border-radius: 8px;
-  }
-  .project-header .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .project-kitchen  { background: #fef3e8; border-left: 3px solid #e8944a; }
-  .project-reno     { background: #eef4ff; border-left: 3px solid #5a8fd4; }
-  .project-general  { background: #f4eeff; border-left: 3px solid #9a6ed4; }
-  .project-stream   { background: #eefaf4; border-left: 3px solid #4ab87e; }
-  .dot-kitchen  { background: #e8944a; }
-  .dot-reno     { background: #5a8fd4; }
-  .dot-general  { background: #9a6ed4; }
-  .dot-stream   { background: #4ab87e; }
+  .phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-active  { background: #e8a030; }
+  .dot-urgent  { background: #e05030; }
+  .dot-p1      { background: #5a90d4; }
+  .dot-p2      { background: #9060c8; }
+  .dot-p3      { background: #4aaa78; }
+  .dot-decor   { background: #d4708a; }
+  .dot-need    { background: #e05030; }
+  .dot-want    { background: #5a90d4; }
+  .dot-bought  { background: #4aaa78; }
 
   /* ITEMS */
   .items { display: flex; flex-direction: column; gap: 8px; }
   .item {
-    background: #fff; border: 1.5px solid #e8e2d8; border-radius: 12px;
+    background: #fff; border: 1.5px solid #e8e0d0; border-radius: 12px;
     padding: 13px 16px; display: flex; align-items: flex-start; gap: 12px;
     transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   }
-  .item:hover { border-color: #c8c0b4; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-  .item.done { opacity: 0.45; }
+  .item:hover { border-color: #c8bca8; }
+  .item.done { opacity: 0.4; }
 
-  .checkbox {
-    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #c8c0b4;
+  .check {
+    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #c8b89a;
     cursor: pointer; flex-shrink: 0; margin-top: 1px;
     display: flex; align-items: center; justify-content: center; transition: all 0.15s;
   }
-  .checkbox:hover { border-color: #8a7e6e; }
-  .checkbox.checked { background: #8a7e6e; border-color: #8a7e6e; }
-  .checkbox.checked::after { content: '✓'; font-size: 11px; color: #fff; font-weight: 600; }
+  .check:hover { border-color: #8a7a5e; }
+  .check.on { background: #8a7a5e; border-color: #8a7a5e; }
+  .check.on::after { content: '✓'; font-size: 11px; color: #fff; font-weight: 700; }
 
   .item-body { flex: 1; min-width: 0; }
-  .item-name { font-size: 14px; color: #1e1a14; font-weight: 450; line-height: 1.3; }
-  .item-meta { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; align-items: center; }
-
-  .badge {
-    font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 500; border: 1px solid transparent;
+  .item-name { font-size: 14px; color: #1e1a10; line-height: 1.3; }
+  .item-note { font-size: 12px; color: #8a7a5e; margin-top: 4px; line-height: 1.4; }
+  .item-tags { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; border: 1px solid transparent;
   }
-  .badge.need    { background: #fde8e0; color: #c05030; border-color: #f0c0a8; }
-  .badge.want    { background: #e0e8f8; color: #3060a8; border-color: #b8ccee; }
-  .badge.todo    { background: #f4eeff; color: #6040a0; border-color: #d4c0f0; }
-  .badge.tobuy   { background: #e0f4ec; color: #206040; border-color: #a8d8c0; }
-  .badge.room    { background: #f0ece4; color: #7a6e5e; border-color: #d8d0c4; }
-  .badge.proj-kitchen { background: #fef3e8; color: #b06820; border-color: #f0d0a0; }
-  .badge.proj-reno    { background: #eef4ff; color: #2850a0; border-color: #b8ccee; }
-  .badge.proj-general { background: #f4eeff; color: #6040a0; border-color: #d4c0f0; }
-  .badge.proj-stream  { background: #eefaf4; color: #1a7040; border-color: #a8d8c0; }
+  .tag.room    { background: #f0ece0; color: #7a6a4e; border-color: #d8cebc; }
+  .tag.need    { background: #fde8e0; color: #b04030; border-color: #f0c0a8; }
+  .tag.want    { background: #e8eef8; color: #3060a0; border-color: #b8ccee; }
+  .tag.urgent  { background: #fff0e0; color: #a05010; border-color: #f0d090; }
+  .tag.active  { background: #fff3e0; color: #8a5010; border-color: #f0c850; }
 
   /* URL */
-  .url-area { margin-top: 8px; }
-  .url-link { font-size: 12px; color: #5a8fd4; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+  .url-area { margin-top: 7px; }
+  .url-link { font-size: 12px; color: #5a8fd4; text-decoration: none; }
   .url-link:hover { color: #2860a8; }
-  .url-link::before { content: '↗ '; font-size: 11px; }
-  .add-url { font-size: 12px; color: #c8c0b4; cursor: pointer; display: flex; align-items: center; gap: 4px; background: none; border: none; padding: 0; transition: color 0.15s; font-family: inherit; }
-  .add-url:hover { color: #8a7e6e; }
-  .url-input-wrap { display: flex; gap: 6px; margin-top: 4px; }
-  .url-input { background: #f8f4f0; border: 1.5px solid #d8d0c4; border-radius: 7px; padding: 5px 10px; font-size: 12px; color: #2c2820; flex: 1; outline: none; font-family: inherit; }
-  .url-input:focus { border-color: #8a7e6e; }
-  .url-save { background: #2c2820; border: none; border-radius: 7px; padding: 5px 12px; font-size: 12px; color: #f0ece4; cursor: pointer; font-family: inherit; }
-  .url-save:hover { background: #1e1a14; }
+  .add-url { font-size: 12px; color: #c8b89a; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; transition: color 0.15s; }
+  .add-url:hover { color: #8a7a5e; }
+  .url-wrap { display: flex; gap: 6px; margin-top: 4px; }
+  .url-inp { background: #f8f4ec; border: 1.5px solid #d8cebc; border-radius: 7px; padding: 5px 10px; font-size: 12px; color: #2c2416; flex: 1; outline: none; font-family: inherit; }
+  .url-inp:focus { border-color: #8a7a5e; }
+  .url-save { background: #2c2416; border: none; border-radius: 7px; padding: 5px 12px; font-size: 12px; color: #f5f0e8; cursor: pointer; font-family: inherit; }
 
-  .empty { color: #b0a898; font-size: 14px; padding: 40px 0; text-align: center; }
+  .empty { color: #b0a080; font-size: 14px; padding: 40px 0; text-align: center; }
 
   @media (max-width: 480px) {
-    header, .tabs, .room-filters, .content { padding-left: 16px; padding-right: 16px; }
-    .stats { padding-left: 16px; padding-right: 16px; }
-    .stat .num { font-size: 20px; }
+    header, .room-bar, .content { padding-left: 16px; padding-right: 16px; }
+    .stats { padding-left: 16px; padding-right: 16px; gap: 8px; }
+    .stat .num { font-size: 18px; }
+    .tab { padding: 10px 14px; font-size: 12px; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🏠 McKenna's Dashboard</h1>
-  <p>Last updated August 4, 2026</p>
-</header>
-
-<div class="tabs" id="tabs">
-  <div class="tab active" data-tab="all">All</div>
-  <div class="tab" data-tab="todo">📋 To Do</div>
-  <div class="tab" data-tab="tobuy">🛒 To Buy</div>
+<!-- AUTH -->
+<div id="auth-screen">
+  <div>
+    <h1>🏠 House Reno</h1>
+    <p style="text-align:center;margin-top:4px">Silver Lake, Los Angeles</p>
+  </div>
+  <input id="auth-input" type="password" placeholder="Password" />
+  <button id="auth-btn">Enter</button>
+  <span id="auth-error">Wrong password</span>
 </div>
 
-<div class="room-filters" id="roomFilters">
+<div id="app" style="display:none">
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1>🏠 House Reno</h1>
+      <p>Silver Lake, Los Angeles · Last updated Aug 4, 2026</p>
+    </div>
+    <div class="budget-pill">$60k budget</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="all">All</div>
+    <div class="tab" data-tab="todo">📋 To Do</div>
+    <div class="tab" data-tab="tobuy">🛒 To Buy</div>
+  </div>
+</header>
+
+<div class="room-bar" id="roomBar">
   <div class="room-btn active" data-room="all">All Rooms</div>
   <div class="room-btn" data-room="living">Living Room</div>
-  <div class="room-btn" data-room="bedroom">Bedroom</div>
   <div class="room-btn" data-room="kitchen">Kitchen</div>
+  <div class="room-btn" data-room="bedroom">Bedroom</div>
   <div class="room-btn" data-room="bathroom">Bathroom</div>
   <div class="room-btn" data-room="deck">Deck</div>
   <div class="room-btn" data-room="general">General</div>
@@ -166,215 +197,224 @@
 <div class="stats" id="stats"></div>
 
 <div class="content">
-  <div id="itemList"></div>
-  <div class="empty" id="emptyMsg" style="display:none">No items match this filter.</div>
+  <div id="list"></div>
+  <div class="empty" id="empty" style="display:none">No items match.</div>
+</div>
+
 </div>
 
 <script>
-  (function() {
-    const correct = "mckenna";
-    const stored = sessionStorage.getItem("dashboard_auth");
-    if (stored !== correct) {
-      const pwd = prompt("Enter password to access dashboard:");
-      if (pwd !== correct) {
-        document.documentElement.innerHTML = "<div style='font-family:sans-serif;padding:40px;color:#888'>Incorrect password.</div>";
-        return;
-      }
-      sessionStorage.setItem("dashboard_auth", correct);
-    }
-  })();
-</script>
-<script>
+// ── AUTH ─────────────────────────────────────────────────────────────────────
+const PWD = "mckenna";
+function checkAuth() {
+  if (sessionStorage.getItem("reno_auth") === PWD) showApp();
+}
+document.getElementById("auth-btn").addEventListener("click", () => {
+  const v = document.getElementById("auth-input").value;
+  if (v === PWD) { sessionStorage.setItem("reno_auth", PWD); showApp(); }
+  else { document.getElementById("auth-error").style.display = "block"; }
+});
+document.getElementById("auth-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("auth-btn").click();
+});
+function showApp() {
+  document.getElementById("auth-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+}
+checkAuth();
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
 const DATA = [
-  { id:1,  name:"Living room couch",            type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
-  { id:2,  name:"Living room console table",    type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
-  { id:3,  name:"Living room coffee table",     type:"tobuy", tier:"need", room:"living",   project:null, url:"", done:false },
-  { id:4,  name:"Upstairs bedroom — shoe storage", type:"tobuy", tier:"need", room:"bedroom", project:null, url:"", done:false },
-  { id:5,  name:"Upstairs bedroom — reading chair", type:"tobuy", tier:"need", room:"bedroom", project:null, url:"", done:false },
+  // ── TO DO ─────────────────────────────────────────────────────────────────
+  // In Progress
+  { id:1,  type:"todo", group:"active",  name:"Floors — sanding + staining", note:"Contractor on site", room:"general", priority:"active" },
 
-  // ── TO BUY — WANT IT ──────────────────────────────────────
-  { id:6,  name:"Dining room furniture",        type:"tobuy", tier:"want", room:"general",  project:null, url:"", done:false },
-  { id:7,  name:"Upstairs bathroom vanity station", type:"tobuy", tier:"want", room:"bathroom", project:null, url:"", done:false },
-  { id:8,  name:"Upstairs bedroom — new sconces",  type:"tobuy", tier:"want", room:"bedroom",  project:null, url:"", done:false },
-  { id:9,  name:"Art",                          type:"tobuy", tier:"want", room:"general",  project:null, url:"", done:false },
-  { id:10, name:"Cutlery + serveware",          type:"tobuy", tier:"want", room:"kitchen",  project:null, url:"", done:false },
-  { id:11, name:"Upstairs bathroom curtains",   type:"tobuy", tier:"want", room:"bathroom", project:null, url:"", done:false },
+  // Urgent
+  { id:2,  type:"todo", group:"urgent",  name:"Ask Vanessa about cabinet guy", note:"Kitchen — get referral before hiring anyone", room:"kitchen", priority:"urgent" },
+  { id:3,  type:"todo", group:"urgent",  name:"Measure current range", note:"Think it's 30\" — confirm width + depth before shopping", room:"kitchen", priority:"urgent" },
 
-  // ── TO DO — KITCHEN RENOVATION ────────────────────────────
-  { id:12, name:"Ask Vanessa about cabinet guy",         type:"todo", tier:"need", room:"kitchen", project:"kitchen", url:"", done:false },
-  { id:13, name:"Kitchen mockups — lock in vision before contractors", type:"todo", tier:"need", room:"kitchen", project:"kitchen", url:"", done:false },
-  { id:14, name:"Find countertop contractor + quotes",   type:"todo", tier:"need", room:"kitchen", project:"kitchen", url:"", done:false },
-  { id:15, name:"Hire cabinet contractor (after Vanessa)", type:"todo", tier:"need", room:"kitchen", project:"kitchen", url:"", done:false },
-  { id:16, name:"Kitchen remodel: cabinets, counters, sink, floors", type:"todo", tier:"need", room:"kitchen", project:"kitchen", url:"", done:false },
+  // Phase 1
+  { id:4,  type:"todo", group:"phase1",  name:"Decide: front door vs entryway floor", note:"Coordinate with floor crew — does the door move affect current work?", room:"general", priority:"" },
+  { id:5,  type:"todo", group:"phase1",  name:"Pick front door style + design", room:"general", priority:"" },
+  { id:6,  type:"todo", group:"phase1",  name:"Find front door contractors + quotes", room:"general", priority:"" },
 
-  // ── TO DO — GENERAL RENOVATION ────────────────────────────
-  { id:17, name:"Floors — sanding + staining (in progress)", type:"todo", tier:"need", room:"general", project:"reno", url:"", done:false },
-  { id:18, name:"Decide: front door move vs entryway floor", type:"todo", tier:"need", room:"general", project:"reno", url:"", done:false },
-  { id:19, name:"Pick front door style/design",             type:"todo", tier:"need", room:"general", project:"reno", url:"", done:false },
-  { id:20, name:"Find front door contractors + quotes",      type:"todo", tier:"need", room:"general", project:"reno", url:"", done:false },
-  { id:21, name:"Bannister replacement (hire contractor)",   type:"todo", tier:"need", room:"general", project:"reno", url:"", done:false },
-  { id:22, name:"Deck redo",                                type:"todo", tier:"need", room:"deck",    project:"reno", url:"", done:false },
+  // Phase 2
+  { id:7,  type:"todo", group:"phase2",  name:"Bannister replacement", note:"Hire contractor", room:"general", priority:"" },
+  { id:8,  type:"todo", group:"phase2",  name:"Kitchen mockups", note:"Lock in the vision before any contractor comes in", room:"kitchen", priority:"" },
+  { id:9,  type:"todo", group:"phase2",  name:"Find countertop contractor + quotes", room:"kitchen", priority:"" },
+  { id:10, type:"todo", group:"phase2",  name:"Cabinet contractor", note:"Waiting on Vanessa referral", room:"kitchen", priority:"" },
+  { id:11, type:"todo", group:"phase2",  name:"Kitchen remodel", note:"Cabinets, countertops, sink, floors", room:"kitchen", priority:"" },
 
-  // ── TO DO — GENERAL TO DOS ────────────────────────────────
-  { id:23, name:"Rotate Telegram bot token",    type:"todo", tier:"need", room:"general", project:"general", url:"", done:false },
-  { id:24, name:"Enable Telegram 2FA",          type:"todo", tier:"need", room:"general", project:"general", url:"", done:false },
-  { id:25, name:"Book Bistrot Paul Bert (Paris, November)", type:"todo", tier:"need", room:"general", project:"general", url:"", done:false },
-  { id:26, name:"Book Le Dome (Paris, November)", type:"todo", tier:"need", room:"general", project:"general", url:"", done:false },
-  { id:27, name:"Build Bourdain Google Maps list", type:"todo", tier:"need", room:"general", project:"general", url:"", done:false },
+  // Phase 3
+  { id:12, type:"todo", group:"phase3",  name:"Deck redo", room:"deck", priority:"" },
 
-  // ── TO DO — STREAMMATCH ───────────────────────────────────
-  { id:28, name:"StreamMatch — add tasks here", type:"todo", tier:"need", room:"general", project:"stream", url:"", done:false },
+  // Decor (parallel)
+  { id:13, type:"todo", group:"decor",   name:"Living room — console table", room:"living", priority:"" },
+  { id:14, type:"todo", group:"decor",   name:"Living room — coffee table", room:"living", priority:"" },
+  { id:15, type:"todo", group:"decor",   name:"Dining room — furniture", room:"general", priority:"" },
+  { id:16, type:"todo", group:"decor",   name:"Cutlery + serveware", room:"kitchen", priority:"" },
+  { id:17, type:"todo", group:"decor",   name:"Art", room:"general", priority:"" },
+  { id:18, type:"todo", group:"decor",   name:"Upstairs bathroom — curtains", room:"bathroom", priority:"" },
+  { id:19, type:"todo", group:"decor",   name:"Upstairs bathroom — vanity station", note:"Research + decide", room:"bathroom", priority:"" },
+
+  // ── TO BUY — NEED IT ──────────────────────────────────────────────────────
+  { id:20, type:"tobuy", tier:"need", name:"Full range (slide-in, dual fuel)", note:"~30\" — measure first. Bertazzoni $1.8-2.5k / BlueStar $2.5-4k / Wolf $3-4.5k", room:"kitchen", url:"" },
+  { id:21, type:"tobuy", tier:"need", name:"Living room couch", room:"living", url:"" },
+  { id:22, type:"tobuy", tier:"need", name:"Living room console table", room:"living", url:"" },
+  { id:23, type:"tobuy", tier:"need", name:"Living room coffee table", room:"living", url:"" },
+  { id:24, type:"tobuy", tier:"need", name:"Upstairs bedroom — shoe storage", room:"bedroom", url:"" },
+  { id:25, type:"tobuy", tier:"need", name:"Upstairs bedroom — reading chair", room:"bedroom", url:"" },
+
+  // ── TO BUY — WANT IT ──────────────────────────────────────────────────────
+  { id:26, type:"tobuy", tier:"want", name:"Dining room furniture", room:"general", url:"" },
+  { id:27, type:"tobuy", tier:"want", name:"Upstairs bathroom vanity station", room:"bathroom", url:"" },
+  { id:28, type:"tobuy", tier:"want", name:"Upstairs bedroom new sconces", room:"bedroom", url:"" },
+  { id:29, type:"tobuy", tier:"want", name:"Art", room:"general", url:"" },
+  { id:30, type:"tobuy", tier:"want", name:"Cutlery + serveware", room:"kitchen", url:"" },
+  { id:31, type:"tobuy", tier:"want", name:"Upstairs bathroom curtains", room:"bathroom", url:"" },
 ];
 
-const ROOM_LABELS = { living:"Living Room", bedroom:"Bedroom", kitchen:"Kitchen", bathroom:"Bathroom", deck:"Deck", general:"General" };
-const PROJECT_META = {
-  kitchen: { label:"Kitchen Renovation",  cls:"project-kitchen", dot:"dot-kitchen",  badge:"proj-kitchen" },
-  reno:    { label:"General Renovation",  cls:"project-reno",    dot:"dot-reno",     badge:"proj-reno"    },
-  general: { label:"General To Dos",      cls:"project-general", dot:"dot-general",  badge:"proj-general" },
-  stream:  { label:"StreamMatch",         cls:"project-stream",  dot:"dot-stream",   badge:"proj-stream"  },
+const ROOM_LABELS = { living:"Living Room", kitchen:"Kitchen", bedroom:"Bedroom", bathroom:"Bathroom", deck:"Deck", general:"General" };
+const GROUPS = {
+  active: { label:"In Progress",               dot:"dot-active"  },
+  urgent: { label:"Urgent — This Week",        dot:"dot-urgent"  },
+  phase1: { label:"Phase 1 — While Floors Are Being Done", dot:"dot-p1" },
+  phase2: { label:"Phase 2 — After Floors",    dot:"dot-p2"      },
+  phase3: { label:"Phase 3 — After Kitchen",   dot:"dot-p3"      },
+  decor:  { label:"Furniture & Decor (ongoing)",dot:"dot-decor"  },
+  need:   { label:"Need It — Must Buy",         dot:"dot-need"    },
+  want:   { label:"Want It — Nice to Have",     dot:"dot-want"    },
 };
 
-const urls = JSON.parse(localStorage.getItem("dashboard_urls") || "{}");
-const done = JSON.parse(localStorage.getItem("dashboard_done") || "{}");
+const urls  = JSON.parse(localStorage.getItem("reno_urls")  || "{}");
+const done  = JSON.parse(localStorage.getItem("reno_done")  || "{}");
 
-let activeTab = "all";
+let activeTab  = "all";
 let activeRoom = "all";
 
+function save() {
+  localStorage.setItem("reno_urls", JSON.stringify(urls));
+  localStorage.setItem("reno_done", JSON.stringify(done));
+}
+
 function render() {
-  let filtered = DATA.filter(item => {
-    const tabMatch =
-      activeTab === "all" ||
-      item.type === activeTab;
-    const roomMatch = activeRoom === "all" || item.room === activeRoom;
-    return tabMatch && roomMatch;
+  let items = DATA.filter(i => {
+    const tabOk  = activeTab === "all" || i.type === activeTab;
+    const roomOk = activeRoom === "all" || i.room === activeRoom;
+    return tabOk && roomOk;
   });
 
-  const list = document.getElementById("itemList");
-  const empty = document.getElementById("emptyMsg");
-  const statsEl = document.getElementById("stats");
-
-  const total      = filtered.length;
-  const doneCount  = filtered.filter(i => done[i.id]).length;
-  const todoCount  = filtered.filter(i => i.type==="todo" && !done[i.id]).length;
-  const tobuyCount = filtered.filter(i => i.type==="tobuy" && !done[i.id]).length;
-
-  statsEl.innerHTML = `
-    <div class="stat s-remain"><div class="num">${total - doneCount}</div><div class="label">Remaining</div></div>
-    <div class="stat s-need"><div class="num">${todoCount}</div><div class="label">To Do</div></div>
-    <div class="stat s-want"><div class="num">${tobuyCount}</div><div class="label">To Buy</div></div>
-    <div class="stat s-done"><div class="num">${doneCount}</div><div class="label">Done</div></div>
+  // Stats
+  const rem   = items.filter(i => !done[i.id]).length;
+  const prog  = items.filter(i => i.group === "active" && !done[i.id]).length;
+  const need  = items.filter(i => (i.group === "urgent" || i.tier === "need") && !done[i.id]).length;
+  const doneN = items.filter(i => done[i.id]).length;
+  document.getElementById("stats").innerHTML = `
+    <div class="stat s-rem"><div class="num">${rem}</div><div class="lbl">Remaining</div></div>
+    <div class="stat s-prog"><div class="num">${prog}</div><div class="lbl">Active</div></div>
+    <div class="stat s-need"><div class="num">${need}</div><div class="lbl">Urgent</div></div>
+    <div class="stat s-done"><div class="num">${doneN}</div><div class="lbl">Done</div></div>
   `;
 
-  if (!filtered.length) {
-    list.innerHTML = "";
-    empty.style.display = "block";
+  if (!items.length) {
+    document.getElementById("list").innerHTML = "";
+    document.getElementById("empty").style.display = "block";
     return;
   }
-  empty.style.display = "none";
+  document.getElementById("empty").style.display = "none";
 
   let html = "";
 
-  if (activeTab === "todo") {
-    // Group by project
-    ["kitchen","reno","general","stream"].forEach(proj => {
-      const items = filtered.filter(i => i.type === "todo" && i.project === proj);
-      if (!items.length) return;
-      const m = PROJECT_META[proj];
-      html += `<div class="project-header ${m.cls}"><div class="dot ${m.dot}"></div>${m.label}</div>`;
-      html += `<div class="items">${items.map(renderItem).join("")}</div>`;
-    });
-  } else {
-    // Group by tier + type
-    const groups = [
-      { label:"NEED IT — Essentials to Buy",  items: filtered.filter(i => i.tier==="need" && i.type==="tobuy") },
-      { label:"NEED IT — To Do",              items: filtered.filter(i => i.tier==="need" && i.type==="todo")  },
-      { label:"WANT IT — To Buy",             items: filtered.filter(i => i.tier==="want" && i.type==="tobuy") },
-      { label:"WANT IT — To Do",              items: filtered.filter(i => i.tier==="want" && i.type==="todo")  },
-    ].filter(g => g.items.length);
-
-    groups.forEach(g => {
-      html += `<div class="section-title">${g.label}</div>`;
-      html += `<div class="items">${g.items.map(renderItem).join("")}</div>`;
+  if (activeTab === "todo" || activeTab === "all") {
+    const todoItems = items.filter(i => i.type === "todo");
+    ["active","urgent","phase1","phase2","phase3","decor"].forEach(g => {
+      const gi = todoItems.filter(i => i.group === g);
+      if (!gi.length) return;
+      const gd = GROUPS[g];
+      html += `<div class="phase"><div class="phase-dot ${gd.dot}"></div>${gd.label}</div>`;
+      html += `<div class="items">${gi.map(renderItem).join("")}</div>`;
     });
   }
 
-  list.innerHTML = html;
+  if (activeTab === "tobuy" || activeTab === "all") {
+    ["need","want"].forEach(tier => {
+      const ti = items.filter(i => i.type === "tobuy" && i.tier === tier);
+      if (!ti.length) return;
+      const gd = GROUPS[tier];
+      html += `<div class="phase"><div class="phase-dot ${gd.dot}"></div>${gd.label}</div>`;
+      html += `<div class="items">${ti.map(renderItem).join("")}</div>`;
+    });
+  }
 
-  list.querySelectorAll(".checkbox").forEach(el =>
-    el.addEventListener("click", () => toggleDone(+el.dataset.id)));
-  list.querySelectorAll(".add-url").forEach(el =>
+  document.getElementById("list").innerHTML = html;
+
+  document.querySelectorAll(".check").forEach(el =>
+    el.addEventListener("click", () => { done[+el.dataset.id] = !done[+el.dataset.id]; save(); render(); }));
+  document.querySelectorAll(".add-url").forEach(el =>
     el.addEventListener("click", () => showUrlInput(+el.dataset.id)));
-  list.querySelectorAll(".url-save").forEach(el =>
+  document.querySelectorAll(".url-save").forEach(el =>
     el.addEventListener("click", () => saveUrl(+el.dataset.id)));
 }
 
 function renderItem(item) {
-  const isDone   = done[item.id];
-  const itemUrl  = urls[item.id] || item.url;
-  const projMeta = item.project ? PROJECT_META[item.project] : null;
+  const isDone = done[item.id];
+  const itemUrl = urls[item.id] || item.url;
+  const tags = [
+    `<span class="tag room">${ROOM_LABELS[item.room]}</span>`,
+    item.tier === "need" ? `<span class="tag need">Need It</span>` : "",
+    item.tier === "want" ? `<span class="tag want">Want It</span>` : "",
+    item.priority === "urgent" ? `<span class="tag urgent">This Week</span>` : "",
+    item.priority === "active" ? `<span class="tag active">In Progress</span>` : "",
+  ].filter(Boolean).join("");
 
   return `
     <div class="item ${isDone ? "done" : ""}">
-      <div class="checkbox ${isDone ? "checked" : ""}" data-id="${item.id}"></div>
+      <div class="check ${isDone ? "on" : ""}" data-id="${item.id}"></div>
       <div class="item-body">
         <div class="item-name">${item.name}</div>
-        <div class="item-meta">
-          <span class="badge ${item.tier}">${item.tier === "need" ? "Need It" : "Want It"}</span>
-          <span class="badge ${item.type}">${item.type === "tobuy" ? "Buy" : "To Do"}</span>
-          <span class="badge room">${ROOM_LABELS[item.room]}</span>
-          ${projMeta ? `<span class="badge ${projMeta.badge}">${projMeta.label}</span>` : ""}
-        </div>
-        <div class="url-area" id="url-area-${item.id}">
+        ${item.note ? `<div class="item-note">${item.note}</div>` : ""}
+        <div class="item-tags">${tags}</div>
+        ${item.type === "tobuy" ? `
+        <div class="url-area" id="url-${item.id}">
           ${itemUrl
-            ? `<a class="url-link" href="${itemUrl}" target="_blank">${itemUrl.replace(/^https?:\/\//,"").split("/")[0]}</a>`
-            : `<button class="add-url" data-id="${item.id}">+ Add link</button>`
-          }
-        </div>
+            ? `<a class="url-link" href="${itemUrl}" target="_blank">↗ ${itemUrl.replace(/^https?:\/\//,"").split("/")[0]}</a>`
+            : `<button class="add-url" data-id="${item.id}">+ Add link</button>`}
+        </div>` : ""}
       </div>
     </div>`;
 }
 
-function toggleDone(id) {
-  done[id] = !done[id];
-  localStorage.setItem("dashboard_done", JSON.stringify(done));
-  render();
-}
-
 function showUrlInput(id) {
-  const area = document.getElementById(`url-area-${id}`);
+  const area = document.getElementById(`url-${id}`);
   area.innerHTML = `
-    <div class="url-input-wrap">
-      <input class="url-input" id="url-input-${id}" type="url" placeholder="https://..." />
+    <div class="url-wrap">
+      <input class="url-inp" id="ui-${id}" type="url" placeholder="https://..." />
       <button class="url-save" data-id="${id}">Save</button>
     </div>`;
-  const input = document.getElementById(`url-input-${id}`);
-  input.focus();
+  const inp = document.getElementById(`ui-${id}`);
+  inp.focus();
   area.querySelector(".url-save").addEventListener("click", () => saveUrl(id));
-  input.addEventListener("keydown", e => { if (e.key === "Enter") saveUrl(id); });
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") saveUrl(id); });
 }
 
 function saveUrl(id) {
-  const input = document.getElementById(`url-input-${id}`);
-  if (input?.value.trim()) {
-    urls[id] = input.value.trim();
-    localStorage.setItem("dashboard_urls", JSON.stringify(urls));
-    render();
-  }
+  const inp = document.getElementById(`ui-${id}`);
+  if (inp?.value.trim()) { urls[id] = inp.value.trim(); save(); render(); }
 }
 
 document.getElementById("tabs").addEventListener("click", e => {
-  const tab = e.target.closest(".tab");
-  if (!tab) return;
-  activeTab = tab.dataset.tab;
-  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === tab));
+  const t = e.target.closest(".tab");
+  if (!t) return;
+  activeTab = t.dataset.tab;
+  document.querySelectorAll(".tab").forEach(x => x.classList.toggle("active", x === t));
   render();
 });
 
-document.getElementById("roomFilters").addEventListener("click", e => {
-  const btn = e.target.closest(".room-btn");
-  if (!btn) return;
-  activeRoom = btn.dataset.room;
-  document.querySelectorAll(".room-btn").forEach(b => b.classList.toggle("active", b === btn));
+document.getElementById("roomBar").addEventListener("click", e => {
+  const b = e.target.closest(".room-btn");
+  if (!b) return;
+  activeRoom = b.dataset.room;
+  document.querySelectorAll(".room-btn").forEach(x => x.classList.toggle("active", x === b));
   render();
 });
 
