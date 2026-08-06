@@ -156,7 +156,7 @@
   <div class="room-btn" data-room="kitchen">Kitchen</div>
   <div class="room-btn" data-room="bedroom">Bedroom</div>
   <div class="room-btn" data-room="bathroom">Bathroom</div>
-  <div class="room-btn" data-room="deck">Deck</div>
+  <div class="room-btn" data-room="deck">Front Deck</div>
   <div class="room-btn" data-room="general">General</div>
 </div>
 
@@ -206,7 +206,7 @@ const DATA = [
   { id:9,  type:"todo", group:"phase2", name:"Find countertop contractor + quotes",       note:"",                                                          room:"kitchen",  priority:"",       est:null  },
   { id:10, type:"todo", group:"phase2", name:"Cabinet contractor",                        note:"Waiting on Vanessa referral",                               room:"kitchen",  priority:"",       est:null  },
   { id:11, type:"todo", group:"phase2", name:"Kitchen remodel",                           note:"Cabinets, countertops, sink, floors",                       room:"kitchen",  priority:"",       est:22000 },
-  { id:12, type:"todo", group:"phase3", name:"Deck redo",                                 note:"",                                                          room:"deck",     priority:"",       est:8000  },
+  { id:12, type:"todo", group:"phase3", name:"Front deck redo",                             note:"Dependency: after front door move is complete. Outside $60k budget.",room:"deck",     priority:"",       est:0     },
   { id:13, type:"todo", group:"decor",  name:"Living room — console table",               note:"",                                                          room:"living",   priority:"",       est:null  },
   { id:14, type:"todo", group:"decor",  name:"Living room — coffee table",                note:"",                                                          room:"living",   priority:"",       est:null  },
   { id:15, type:"todo", group:"decor",  name:"Dining room — furniture",                   note:"",                                                          room:"general",  priority:"",       est:null  },
@@ -232,13 +232,13 @@ const DATA = [
   { id:31, type:"tobuy", tier:"want", name:"Upstairs bathroom curtains",                  note:"",                                                          room:"bathroom", url:"", est:150   },
 ];
 
-const ROOM_LABELS = { living:"Living Room", kitchen:"Kitchen", bedroom:"Bedroom", bathroom:"Bathroom", deck:"Deck", general:"General" };
+const ROOM_LABELS = { living:"Living Room", kitchen:"Kitchen", bedroom:"Bedroom", bathroom:"Bathroom", deck:"Front Deck", general:"General" };
 const GROUPS = {
   active: { label:"In Progress",                          dot:"dot-active" },
   urgent: { label:"Urgent — This Week",                   dot:"dot-urgent" },
   phase1: { label:"Phase 1 — While Floors Are Being Done",dot:"dot-p1"     },
   phase2: { label:"Phase 2 — After Floors",               dot:"dot-p2"     },
-  phase3: { label:"Phase 3 — After Kitchen",              dot:"dot-p3"     },
+  phase3: { label:"Phase 3 — After Front Door Move",          dot:"dot-p3"     },
   decor:  { label:"Furniture & Decor (ongoing)",          dot:"dot-decor"  },
   need:   { label:"Need It — Must Buy",                   dot:"dot-need"   },
   want:   { label:"Want It — Nice to Have",               dot:"dot-want"   },
@@ -395,7 +395,7 @@ function renderItem(item) {
     item.tier === "want"          ? `<span class="tag want">Want It</span>`    : "",
     item.priority === "urgent"    ? `<span class="tag urgent">This Week</span>`: "",
     item.priority === "active"    ? `<span class="tag active">Active</span>`   : "",
-    item.est                      ? `<span class="tag cost">${fmt(item.est)}</span>` : "",
+    (item.est && item.est > 0)    ? `<span class="tag cost">${fmt(item.est)}</span>` : "",
   ].filter(Boolean).join("");
 
   return `
