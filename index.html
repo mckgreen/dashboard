@@ -6,13 +6,7 @@
 <title>House Reno</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f5f0e8;
-    color: #2c2416;
-    min-height: 100vh;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f0e8; color: #2c2416; min-height: 100vh; }
 
   /* AUTH */
   #auth-screen {
@@ -20,53 +14,28 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 100;
   }
   #auth-screen h1 { font-size: 22px; font-weight: 700; color: #2c2416; }
-  #auth-screen p { font-size: 14px; color: #8a7a5e; }
-  #auth-input {
-    padding: 12px 16px; border: 1.5px solid #d4c8b0; border-radius: 10px;
-    font-size: 16px; width: 240px; background: #fff; outline: none; text-align: center;
-  }
+  #auth-input { padding: 12px 16px; border: 1.5px solid #d4c8b0; border-radius: 10px; font-size: 16px; width: 240px; background: #fff; outline: none; text-align: center; }
   #auth-input:focus { border-color: #8a7a5e; }
-  #auth-btn {
-    padding: 12px 32px; background: #2c2416; color: #f5f0e8; border: none;
-    border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 240px;
-  }
+  #auth-btn { padding: 12px 32px; background: #2c2416; color: #f5f0e8; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; width: 240px; }
   #auth-error { font-size: 13px; color: #c05030; display: none; }
 
   /* HEADER */
-  header {
-    background: #ece6da; border-bottom: 1px solid #d8cebc;
-    padding: 20px 20px 0;
-  }
+  header { background: #ece6da; border-bottom: 1px solid #d8cebc; padding: 20px 20px 0; }
   .header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
   header h1 { font-size: 20px; font-weight: 700; color: #1e1a10; letter-spacing: -0.3px; }
   header p { font-size: 12px; color: #9a8a6a; margin-top: 2px; }
-  .budget-pill {
-    background: #e8f0e0; border: 1px solid #c0d4a8; border-radius: 20px;
-    padding: 4px 12px; font-size: 12px; font-weight: 600; color: #3a6020;
-  }
 
   /* TABS */
   .tabs { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer;
-    border: none; background: transparent; color: #8a7a5e; white-space: nowrap;
-    border-bottom: 2.5px solid transparent; transition: all 0.15s;
-  }
+  .tab { padding: 10px 18px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: #8a7a5e; white-space: nowrap; border-bottom: 2.5px solid transparent; transition: all 0.15s; }
   .tab:hover { color: #2c2416; }
   .tab.active { color: #2c2416; border-bottom-color: #2c2416; font-weight: 600; }
 
   /* ROOM FILTER */
-  .room-bar {
-    background: #ece6da; border-bottom: 1px solid #d8cebc;
-    display: flex; gap: 6px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none;
-  }
+  .room-bar { background: #ece6da; border-bottom: 1px solid #d8cebc; display: flex; gap: 6px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none; }
   .room-bar::-webkit-scrollbar { display: none; }
-  .room-btn {
-    padding: 5px 13px; border-radius: 14px; font-size: 12px; font-weight: 500;
-    cursor: pointer; border: 1.5px solid #ccc4b0; background: transparent;
-    color: #8a7a5e; white-space: nowrap; transition: all 0.15s;
-  }
+  .room-btn { padding: 5px 13px; border-radius: 14px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid #ccc4b0; background: transparent; color: #8a7a5e; white-space: nowrap; transition: all 0.15s; }
   .room-btn:hover { color: #2c2416; border-color: #aaa090; }
   .room-btn.active { background: #2c2416; color: #f5f0e8; border-color: #2c2416; }
 
@@ -75,67 +44,67 @@
   .stat { border-radius: 12px; padding: 12px 14px; flex: 1; text-align: center; border: 1.5px solid transparent; }
   .stat.s-rem  { background: #ede7db; border-color: #d8cebc; }
   .stat.s-prog { background: #fff3e0; border-color: #f0d8a8; }
-  .stat.s-need { background: #fde8e0; border-color: #f0c8b0; }
+  .stat.s-wait { background: #e8eef8; border-color: #c0d0ee; }
   .stat.s-done { background: #e4f0da; border-color: #b8d8a0; }
   .stat .num { font-size: 22px; font-weight: 700; color: #1e1a10; }
   .stat .lbl { font-size: 10px; font-weight: 600; color: #8a7a5e; margin-top: 2px; letter-spacing: 0.3px; }
+
+  /* BUDGET BAR */
+  .budget-bar { margin: 12px 20px 0; background: #fff; border: 1.5px solid #e0d8c8; border-radius: 12px; padding: 12px 16px; }
+  .budget-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .budget-label { font-size: 11px; font-weight: 700; color: #7a6a4e; letter-spacing: 0.5px; text-transform: uppercase; }
+  .budget-nums { font-size: 12px; color: #8a7a5e; }
+  .budget-nums strong { color: #2c2416; font-weight: 700; }
+  .budget-track { height: 8px; background: #ede7db; border-radius: 4px; overflow: hidden; }
+  .budget-fill { height: 100%; border-radius: 4px; background: #4aaa78; transition: width 0.4s; }
+  .budget-fill.warn  { background: #e8a030; }
+  .budget-fill.over  { background: #e05030; }
+  .budget-breakdown { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .budget-room { font-size: 11px; color: #8a7a5e; background: #f5f0e8; border-radius: 6px; padding: 3px 8px; }
+  .budget-room span { color: #2c2416; font-weight: 600; }
+
+  /* STATUS LEGEND */
+  .status-legend { display: flex; gap: 12px; padding: 10px 20px 12px; background: #f5f0e8; border-bottom: 1px solid #e8e0d0; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #8a7a5e; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
 
   /* CONTENT */
   .content { padding: 8px 20px 40px; }
 
   /* PHASE HEADERS */
-  .phase {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
-    color: #7a6a4e; margin: 20px 0 8px; padding-bottom: 8px;
-    border-bottom: 1.5px solid #ddd4c0;
-  }
+  .phase { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #7a6a4e; margin: 20px 0 8px; padding-bottom: 8px; border-bottom: 1.5px solid #ddd4c0; }
   .phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dot-active  { background: #e8a030; }
-  .dot-urgent  { background: #e05030; }
-  .dot-p1      { background: #5a90d4; }
-  .dot-p2      { background: #9060c8; }
-  .dot-p3      { background: #4aaa78; }
-  .dot-decor   { background: #d4708a; }
-  .dot-need    { background: #e05030; }
-  .dot-want    { background: #5a90d4; }
-  .dot-bought  { background: #4aaa78; }
+  .dot-active { background: #e8a030; } .dot-urgent { background: #e05030; }
+  .dot-p1 { background: #5a90d4; }     .dot-p2 { background: #9060c8; }
+  .dot-p3 { background: #4aaa78; }     .dot-decor { background: #d4708a; }
+  .dot-need { background: #e05030; }   .dot-want { background: #5a90d4; }
 
   /* ITEMS */
   .items { display: flex; flex-direction: column; gap: 8px; }
-  .item {
-    background: #fff; border: 1.5px solid #e8e0d0; border-radius: 12px;
-    padding: 13px 16px; display: flex; align-items: flex-start; gap: 12px;
-    transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
+  .item { background: #fff; border: 1.5px solid #e8e0d0; border-radius: 12px; padding: 13px 16px; display: flex; align-items: flex-start; gap: 12px; transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
   .item:hover { border-color: #c8bca8; }
   .item.done { opacity: 0.4; }
 
-  /* STATUS INDICATORS */
-  .status-btn {
-    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; transition: all 0.15s; border: none; background: none;
-    user-select: none; -webkit-user-select: none;
-  }
+  /* STATUS */
+  .status-btn { width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; border: none; background: none; user-select: none; -webkit-user-select: none; }
   .status-btn:hover { transform: scale(1.1); }
   .s-none    { background: #ede7db; border: 1.5px solid #d0c8b8 !important; color: #b0a080; }
   .s-active  { background: #fff3e0; border: 1.5px solid #f0c850 !important; color: #a06010; }
   .s-waiting { background: #e8eef8; border: 1.5px solid #b8ccee !important; color: #3060a0; }
   .s-done    { background: #e4f0da; border: 1.5px solid #b0d898 !important; color: #3a7020; }
 
+  /* ITEM BODY */
   .item-body { flex: 1; min-width: 0; }
   .item-name { font-size: 14px; color: #1e1a10; line-height: 1.3; }
   .item-note { font-size: 12px; color: #8a7a5e; margin-top: 4px; line-height: 1.4; }
-  .item-tags { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
-  .tag {
-    font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; border: 1px solid transparent;
-  }
-  .tag.room    { background: #f0ece0; color: #7a6a4e; border-color: #d8cebc; }
-  .tag.need    { background: #fde8e0; color: #b04030; border-color: #f0c0a8; }
-  .tag.want    { background: #e8eef8; color: #3060a0; border-color: #b8ccee; }
-  .tag.urgent  { background: #fff0e0; color: #a05010; border-color: #f0d090; }
-  .tag.active  { background: #fff3e0; color: #8a5010; border-color: #f0c850; }
+  .item-tags { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; border: 1px solid transparent; }
+  .tag.room   { background: #f0ece0; color: #7a6a4e; border-color: #d8cebc; }
+  .tag.need   { background: #fde8e0; color: #b04030; border-color: #f0c0a8; }
+  .tag.want   { background: #e8eef8; color: #3060a0; border-color: #b8ccee; }
+  .tag.urgent { background: #fff0e0; color: #a05010; border-color: #f0d090; }
+  .tag.active { background: #fff3e0; color: #8a5010; border-color: #f0c850; }
+  .tag.cost   { background: #f0f4ec; color: #3a6020; border-color: #c0d4a8; font-weight: 600; }
 
   /* URL */
   .url-area { margin-top: 7px; }
@@ -151,7 +120,7 @@
   .empty { color: #b0a080; font-size: 14px; padding: 40px 0; text-align: center; }
 
   @media (max-width: 480px) {
-    header, .room-bar, .content { padding-left: 16px; padding-right: 16px; }
+    header, .room-bar, .content, .budget-bar { padding-left: 16px; padding-right: 16px; }
     .stats { padding-left: 16px; padding-right: 16px; gap: 8px; }
     .stat .num { font-size: 18px; }
     .tab { padding: 10px 14px; font-size: 12px; }
@@ -160,12 +129,8 @@
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen">
-  <div>
-    <h1>🏠 House Reno</h1>
-    <p style="text-align:center;margin-top:4px">Silver Lake, Los Angeles</p>
-  </div>
+  <div><h1>🏠 House Reno</h1><p style="text-align:center;margin-top:4px">Silver Lake, Los Angeles</p></div>
   <input id="auth-input" type="password" placeholder="Password" />
   <button id="auth-btn">Enter</button>
   <span id="auth-error">Wrong password</span>
@@ -175,16 +140,13 @@
 
 <header>
   <div class="header-top">
-    <div>
-      <h1>🏠 House Reno</h1>
-      <p>Silver Lake, Los Angeles · Last updated Aug 4, 2026</p>
-    </div>
-    <div class="budget-pill">$60k budget</div>
+    <div><h1>🏠 House Reno</h1><p>Silver Lake · $60k budget · Last updated Aug 4, 2026</p></div>
   </div>
   <div class="tabs" id="tabs">
     <div class="tab active" data-tab="all">All</div>
     <div class="tab" data-tab="todo">📋 To Do</div>
     <div class="tab" data-tab="tobuy">🛒 To Buy</div>
+    <div class="tab" data-tab="budget">💰 Budget</div>
   </div>
 </header>
 
@@ -199,13 +161,14 @@
 </div>
 
 <div class="stats" id="stats"></div>
+<div id="budget-bar-wrap"></div>
 
 <div class="status-legend">
   <div class="legend-item"><div class="legend-dot" style="background:#c8b89a"></div>Not Started</div>
   <div class="legend-item"><div class="legend-dot" style="background:#f0c850"></div>In Progress</div>
   <div class="legend-item"><div class="legend-dot" style="background:#b8ccee"></div>Waiting</div>
   <div class="legend-item"><div class="legend-dot" style="background:#b0d898"></div>Done</div>
-  <span style="font-size:11px;color:#b0a080;margin-left:auto">Tap status button to cycle</span>
+  <span style="font-size:11px;color:#b0a080;margin-left:auto">Tap status to cycle</span>
 </div>
 
 <div class="content">
@@ -216,117 +179,135 @@
 </div>
 
 <script>
-// ── AUTH ─────────────────────────────────────────────────────────────────────
+// ── AUTH ──────────────────────────────────────────────────────────────────────
 const PWD = "mckenna";
-function checkAuth() {
-  if (sessionStorage.getItem("reno_auth") === PWD) showApp();
-}
+function checkAuth() { if (sessionStorage.getItem("reno_auth") === PWD) showApp(); }
 document.getElementById("auth-btn").addEventListener("click", () => {
-  const v = document.getElementById("auth-input").value;
-  if (v === PWD) { sessionStorage.setItem("reno_auth", PWD); showApp(); }
-  else { document.getElementById("auth-error").style.display = "block"; }
+  if (document.getElementById("auth-input").value === PWD) { sessionStorage.setItem("reno_auth", PWD); showApp(); }
+  else document.getElementById("auth-error").style.display = "block";
 });
-document.getElementById("auth-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("auth-btn").click();
-});
-function showApp() {
-  document.getElementById("auth-screen").style.display = "none";
-  document.getElementById("app").style.display = "block";
-}
+document.getElementById("auth-input").addEventListener("keydown", e => { if (e.key === "Enter") document.getElementById("auth-btn").click(); });
+function showApp() { document.getElementById("auth-screen").style.display = "none"; document.getElementById("app").style.display = "block"; }
 checkAuth();
 
-// ── DATA ─────────────────────────────────────────────────────────────────────
+// ── DATA ──────────────────────────────────────────────────────────────────────
+// est = estimated cost in dollars (null = TBD / no direct cost)
+const BUDGET = 60000;
 const DATA = [
-  // ── TO DO ─────────────────────────────────────────────────────────────────
-  // In Progress
-  { id:1,  type:"todo", group:"active",  name:"Floors — sanding + staining", note:"Contractor on site", room:"general", priority:"active" },
+  // TO DO
+  { id:1,  type:"todo", group:"active", name:"Floors — sanding + staining",              note:"Contractor on site",                                        room:"general",  priority:"active", est:5000  },
+  { id:2,  type:"todo", group:"urgent", name:"Ask Vanessa about cabinet guy",             note:"Kitchen — get referral before hiring anyone",               room:"kitchen",  priority:"urgent", est:null  },
+  { id:3,  type:"todo", group:"urgent", name:"Measure current range",                     note:'Think it\'s 30" — confirm width + depth before shopping',   room:"kitchen",  priority:"urgent", est:null  },
+  { id:4,  type:"todo", group:"phase1", name:"Decide: front door vs entryway floor",      note:"Coordinate with floor crew",                                room:"general",  priority:"",       est:null  },
+  { id:5,  type:"todo", group:"phase1", name:"Pick front door style + design",            note:"",                                                          room:"general",  priority:"",       est:null  },
+  { id:6,  type:"todo", group:"phase1", name:"Find front door contractors + quotes",      note:"",                                                          room:"general",  priority:"",       est:4000  },
+  { id:7,  type:"todo", group:"phase2", name:"Bannister replacement",                     note:"Hire contractor",                                           room:"general",  priority:"",       est:2500  },
+  { id:8,  type:"todo", group:"phase2", name:"Kitchen mockups",                           note:"Lock in vision before contractors come in",                 room:"kitchen",  priority:"",       est:null  },
+  { id:9,  type:"todo", group:"phase2", name:"Find countertop contractor + quotes",       note:"",                                                          room:"kitchen",  priority:"",       est:null  },
+  { id:10, type:"todo", group:"phase2", name:"Cabinet contractor",                        note:"Waiting on Vanessa referral",                               room:"kitchen",  priority:"",       est:null  },
+  { id:11, type:"todo", group:"phase2", name:"Kitchen remodel",                           note:"Cabinets, countertops, sink, floors",                       room:"kitchen",  priority:"",       est:22000 },
+  { id:12, type:"todo", group:"phase3", name:"Deck redo",                                 note:"",                                                          room:"deck",     priority:"",       est:8000  },
+  { id:13, type:"todo", group:"decor",  name:"Living room — console table",               note:"",                                                          room:"living",   priority:"",       est:null  },
+  { id:14, type:"todo", group:"decor",  name:"Living room — coffee table",                note:"",                                                          room:"living",   priority:"",       est:null  },
+  { id:15, type:"todo", group:"decor",  name:"Dining room — furniture",                   note:"",                                                          room:"general",  priority:"",       est:null  },
+  { id:16, type:"todo", group:"decor",  name:"Cutlery + serveware",                       note:"",                                                          room:"kitchen",  priority:"",       est:null  },
+  { id:17, type:"todo", group:"decor",  name:"Art",                                       note:"",                                                          room:"general",  priority:"",       est:null  },
+  { id:18, type:"todo", group:"decor",  name:"Upstairs bathroom — curtains",              note:"",                                                          room:"bathroom", priority:"",       est:null  },
+  { id:19, type:"todo", group:"decor",  name:"Upstairs bathroom — vanity station",        note:"Research + decide",                                         room:"bathroom", priority:"",       est:null  },
 
-  // Urgent
-  { id:2,  type:"todo", group:"urgent",  name:"Ask Vanessa about cabinet guy", note:"Kitchen — get referral before hiring anyone", room:"kitchen", priority:"urgent" },
-  { id:3,  type:"todo", group:"urgent",  name:"Measure current range", note:"Think it's 30\" — confirm width + depth before shopping", room:"kitchen", priority:"urgent" },
+  // TO BUY — NEED IT
+  { id:20, type:"tobuy", tier:"need", name:"Full range (slide-in, dual fuel)",            note:'~30" — measure first. Bertazzoni $1.8-2.5k / BlueStar $2.5-4k / Wolf $3-4.5k', room:"kitchen",  url:"", est:2500  },
+  { id:21, type:"tobuy", tier:"need", name:"Living room couch",                           note:"",                                                          room:"living",   url:"", est:3000  },
+  { id:22, type:"tobuy", tier:"need", name:"Living room console table",                   note:"",                                                          room:"living",   url:"", est:800   },
+  { id:23, type:"tobuy", tier:"need", name:"Living room coffee table",                    note:"",                                                          room:"living",   url:"", est:600   },
+  { id:24, type:"tobuy", tier:"need", name:"Upstairs bedroom — shoe storage",             note:"",                                                          room:"bedroom",  url:"", est:400   },
+  { id:25, type:"tobuy", tier:"need", name:"Upstairs bedroom — reading chair",            note:"",                                                          room:"bedroom",  url:"", est:1200  },
 
-  // Phase 1
-  { id:4,  type:"todo", group:"phase1",  name:"Decide: front door vs entryway floor", note:"Coordinate with floor crew — does the door move affect current work?", room:"general", priority:"" },
-  { id:5,  type:"todo", group:"phase1",  name:"Pick front door style + design", room:"general", priority:"" },
-  { id:6,  type:"todo", group:"phase1",  name:"Find front door contractors + quotes", room:"general", priority:"" },
-
-  // Phase 2
-  { id:7,  type:"todo", group:"phase2",  name:"Bannister replacement", note:"Hire contractor", room:"general", priority:"" },
-  { id:8,  type:"todo", group:"phase2",  name:"Kitchen mockups", note:"Lock in the vision before any contractor comes in", room:"kitchen", priority:"" },
-  { id:9,  type:"todo", group:"phase2",  name:"Find countertop contractor + quotes", room:"kitchen", priority:"" },
-  { id:10, type:"todo", group:"phase2",  name:"Cabinet contractor", note:"Waiting on Vanessa referral", room:"kitchen", priority:"" },
-  { id:11, type:"todo", group:"phase2",  name:"Kitchen remodel", note:"Cabinets, countertops, sink, floors", room:"kitchen", priority:"" },
-
-  // Phase 3
-  { id:12, type:"todo", group:"phase3",  name:"Deck redo", room:"deck", priority:"" },
-
-  // Decor (parallel)
-  { id:13, type:"todo", group:"decor",   name:"Living room — console table", room:"living", priority:"" },
-  { id:14, type:"todo", group:"decor",   name:"Living room — coffee table", room:"living", priority:"" },
-  { id:15, type:"todo", group:"decor",   name:"Dining room — furniture", room:"general", priority:"" },
-  { id:16, type:"todo", group:"decor",   name:"Cutlery + serveware", room:"kitchen", priority:"" },
-  { id:17, type:"todo", group:"decor",   name:"Art", room:"general", priority:"" },
-  { id:18, type:"todo", group:"decor",   name:"Upstairs bathroom — curtains", room:"bathroom", priority:"" },
-  { id:19, type:"todo", group:"decor",   name:"Upstairs bathroom — vanity station", note:"Research + decide", room:"bathroom", priority:"" },
-
-  // ── TO BUY — NEED IT ──────────────────────────────────────────────────────
-  { id:20, type:"tobuy", tier:"need", name:"Full range (slide-in, dual fuel)", note:"~30\" — measure first. Bertazzoni $1.8-2.5k / BlueStar $2.5-4k / Wolf $3-4.5k", room:"kitchen", url:"" },
-  { id:21, type:"tobuy", tier:"need", name:"Living room couch", room:"living", url:"" },
-  { id:22, type:"tobuy", tier:"need", name:"Living room console table", room:"living", url:"" },
-  { id:23, type:"tobuy", tier:"need", name:"Living room coffee table", room:"living", url:"" },
-  { id:24, type:"tobuy", tier:"need", name:"Upstairs bedroom — shoe storage", room:"bedroom", url:"" },
-  { id:25, type:"tobuy", tier:"need", name:"Upstairs bedroom — reading chair", room:"bedroom", url:"" },
-
-  // ── TO BUY — WANT IT ──────────────────────────────────────────────────────
-  { id:26, type:"tobuy", tier:"want", name:"Dining room furniture", room:"general", url:"" },
-  { id:27, type:"tobuy", tier:"want", name:"Upstairs bathroom vanity station", room:"bathroom", url:"" },
-  { id:28, type:"tobuy", tier:"want", name:"Upstairs bedroom new sconces", room:"bedroom", url:"" },
-  { id:29, type:"tobuy", tier:"want", name:"Art", room:"general", url:"" },
-  { id:30, type:"tobuy", tier:"want", name:"Cutlery + serveware", room:"kitchen", url:"" },
-  { id:31, type:"tobuy", tier:"want", name:"Upstairs bathroom curtains", room:"bathroom", url:"" },
+  // TO BUY — WANT IT
+  { id:26, type:"tobuy", tier:"want", name:"Dining room furniture",                       note:"",                                                          room:"general",  url:"", est:2000  },
+  { id:27, type:"tobuy", tier:"want", name:"Upstairs bathroom vanity station",            note:"",                                                          room:"bathroom", url:"", est:800   },
+  { id:28, type:"tobuy", tier:"want", name:"Upstairs bedroom new sconces",                note:"",                                                          room:"bedroom",  url:"", est:400   },
+  { id:29, type:"tobuy", tier:"want", name:"Art",                                         note:"",                                                          room:"general",  url:"", est:500   },
+  { id:30, type:"tobuy", tier:"want", name:"Cutlery + serveware",                         note:"",                                                          room:"kitchen",  url:"", est:300   },
+  { id:31, type:"tobuy", tier:"want", name:"Upstairs bathroom curtains",                  note:"",                                                          room:"bathroom", url:"", est:150   },
 ];
 
 const ROOM_LABELS = { living:"Living Room", kitchen:"Kitchen", bedroom:"Bedroom", bathroom:"Bathroom", deck:"Deck", general:"General" };
 const GROUPS = {
-  active: { label:"In Progress",               dot:"dot-active"  },
-  urgent: { label:"Urgent — This Week",        dot:"dot-urgent"  },
-  phase1: { label:"Phase 1 — While Floors Are Being Done", dot:"dot-p1" },
-  phase2: { label:"Phase 2 — After Floors",    dot:"dot-p2"      },
-  phase3: { label:"Phase 3 — After Kitchen",   dot:"dot-p3"      },
-  decor:  { label:"Furniture & Decor (ongoing)",dot:"dot-decor"  },
-  need:   { label:"Need It — Must Buy",         dot:"dot-need"    },
-  want:   { label:"Want It — Nice to Have",     dot:"dot-want"    },
+  active: { label:"In Progress",                          dot:"dot-active" },
+  urgent: { label:"Urgent — This Week",                   dot:"dot-urgent" },
+  phase1: { label:"Phase 1 — While Floors Are Being Done",dot:"dot-p1"     },
+  phase2: { label:"Phase 2 — After Floors",               dot:"dot-p2"     },
+  phase3: { label:"Phase 3 — After Kitchen",              dot:"dot-p3"     },
+  decor:  { label:"Furniture & Decor (ongoing)",          dot:"dot-decor"  },
+  need:   { label:"Need It — Must Buy",                   dot:"dot-need"   },
+  want:   { label:"Want It — Nice to Have",               dot:"dot-want"   },
 };
 
-const STATUSES = ["none", "active", "waiting", "done"];
-const STATUS_ICON  = { none:"○", active:"⟳", waiting:"⏸", done:"✓" };
-const STATUS_LABEL = { none:"Not Started", active:"In Progress", waiting:"Waiting", done:"Done" };
-const STATUS_CLASS = { none:"s-none", active:"s-active", waiting:"s-waiting", done:"s-done" };
+const STATUSES    = ["none","active","waiting","done"];
+const STATUS_ICON = { none:"○", active:"⟳", waiting:"⏸", done:"✓" };
+const STATUS_LBL  = { none:"Not Started", active:"In Progress", waiting:"Waiting", done:"Done" };
+const STATUS_CLS  = { none:"s-none", active:"s-active", waiting:"s-waiting", done:"s-done" };
 
 const urls   = JSON.parse(localStorage.getItem("reno_urls")   || "{}");
 const status = JSON.parse(localStorage.getItem("reno_status") || "{}");
 
 function getStatus(id) { return status[id] || "none"; }
-
 function cycleStatus(id) {
   const cur = getStatus(id);
-  const next = STATUSES[(STATUSES.indexOf(cur) + 1) % STATUSES.length];
-  status[id] = next;
-  save();
-  render();
+  status[id] = STATUSES[(STATUSES.indexOf(cur) + 1) % STATUSES.length];
+  save(); render();
 }
 
 let activeTab  = "all";
 let activeRoom = "all";
 
 function save() {
-  localStorage.setItem("reno_urls",    JSON.stringify(urls));
-  localStorage.setItem("reno_status",  JSON.stringify(status));
+  localStorage.setItem("reno_urls",   JSON.stringify(urls));
+  localStorage.setItem("reno_status", JSON.stringify(status));
 }
 
+// ── BUDGET HELPERS ────────────────────────────────────────────────────────────
+const fmt = n => n >= 1000 ? `$${(n/1000).toFixed(n%1000===0?0:1)}k` : `$${n}`;
+
+function budgetByRoom() {
+  const rooms = {};
+  DATA.forEach(i => {
+    if (!i.est) return;
+    if (!rooms[i.room]) rooms[i.room] = { est:0, spent:0 };
+    rooms[i.room].est += i.est;
+    if (getStatus(i.id) === "done") rooms[i.room].spent += i.est;
+  });
+  return rooms;
+}
+
+function renderBudgetBar(filteredItems) {
+  const relevant = filteredItems.filter(i => i.est);
+  const totalEst  = DATA.reduce((s,i) => s + (i.est||0), 0);
+  const totalDone = DATA.filter(i => getStatus(i.id) === "done").reduce((s,i) => s + (i.est||0), 0);
+  const pct = Math.min(100, (totalEst / BUDGET) * 100);
+  const fillCls = totalEst > BUDGET ? "over" : totalEst > BUDGET * 0.85 ? "warn" : "";
+  const rooms = budgetByRoom();
+  const roomBreakdown = Object.entries(rooms)
+    .sort((a,b) => b[1].est - a[1].est)
+    .map(([r,v]) => `<div class="budget-room">${ROOM_LABELS[r] || r}: <span>${fmt(v.est)}</span></div>`)
+    .join("");
+
+  return `
+    <div class="budget-bar">
+      <div class="budget-row">
+        <div class="budget-label">Budget Tracker</div>
+        <div class="budget-nums">Spent: <strong>${fmt(totalDone)}</strong> · Estimated: <strong>${fmt(totalEst)}</strong> / <strong>$60k</strong></div>
+      </div>
+      <div class="budget-track"><div class="budget-fill ${fillCls}" style="width:${pct}%"></div></div>
+      <div class="budget-breakdown">${roomBreakdown}</div>
+    </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function render() {
   let items = DATA.filter(i => {
-    const tabOk  = activeTab === "all" || i.type === activeTab;
+    const tabOk  = activeTab === "all" || activeTab === "budget" || i.type === activeTab;
     const roomOk = activeRoom === "all" || i.room === activeRoom;
     return tabOk && roomOk;
   });
@@ -339,9 +320,29 @@ function render() {
   document.getElementById("stats").innerHTML = `
     <div class="stat s-rem"><div class="num">${rem}</div><div class="lbl">Remaining</div></div>
     <div class="stat s-prog"><div class="num">${inprog}</div><div class="lbl">In Progress</div></div>
-    <div class="stat s-need"><div class="num">${waiting}</div><div class="lbl">Waiting</div></div>
+    <div class="stat s-wait"><div class="num">${waiting}</div><div class="lbl">Waiting</div></div>
     <div class="stat s-done"><div class="num">${doneN}</div><div class="lbl">Done</div></div>
   `;
+
+  // Budget bar — always visible
+  document.getElementById("budget-bar-wrap").innerHTML = renderBudgetBar(items);
+
+  // Budget tab — show full breakdown only
+  if (activeTab === "budget") {
+    const rooms = budgetByRoom();
+    let html = "";
+    Object.entries(rooms).sort((a,b) => b[1].est - a[1].est).forEach(([room, v]) => {
+      const pct = Math.min(100, (v.spent / v.est) * 100);
+      const roomItems = DATA.filter(i => i.room === room && i.est);
+      html += `
+        <div class="phase"><div class="phase-dot" style="background:#8a7a5e"></div>${ROOM_LABELS[room] || room} — ${fmt(v.est)}</div>
+        <div class="items">${roomItems.map(renderItem).join("")}</div>`;
+    });
+    document.getElementById("list").innerHTML = html || "<p class='empty'>No estimated costs yet.</p>";
+    document.getElementById("empty").style.display = "none";
+    attachHandlers();
+    return;
+  }
 
   if (!items.length) {
     document.getElementById("list").innerHTML = "";
@@ -351,7 +352,6 @@ function render() {
   document.getElementById("empty").style.display = "none";
 
   let html = "";
-
   if (activeTab === "todo" || activeTab === "all") {
     const todoItems = items.filter(i => i.type === "todo");
     ["active","urgent","phase1","phase2","phase3","decor"].forEach(g => {
@@ -362,7 +362,6 @@ function render() {
       html += `<div class="items">${gi.map(renderItem).join("")}</div>`;
     });
   }
-
   if (activeTab === "tobuy" || activeTab === "all") {
     ["need","want"].forEach(tier => {
       const ti = items.filter(i => i.type === "tobuy" && i.tier === tier);
@@ -374,7 +373,10 @@ function render() {
   }
 
   document.getElementById("list").innerHTML = html;
+  attachHandlers();
+}
 
+function attachHandlers() {
   document.querySelectorAll(".status-btn").forEach(el =>
     el.addEventListener("click", () => cycleStatus(+el.dataset.id)));
   document.querySelectorAll(".add-url").forEach(el =>
@@ -385,19 +387,20 @@ function render() {
 
 function renderItem(item) {
   const st = getStatus(item.id);
-  const isDone = st === "done";
-  const itemUrl = urls[item.id] || item.url;
+  const isDone  = st === "done";
+  const itemUrl = urls[item.id] || item.url || "";
   const tags = [
     `<span class="tag room">${ROOM_LABELS[item.room]}</span>`,
-    item.tier === "need" ? `<span class="tag need">Need It</span>` : "",
-    item.tier === "want" ? `<span class="tag want">Want It</span>` : "",
-    item.priority === "urgent" ? `<span class="tag urgent">This Week</span>` : "",
-    item.priority === "active" ? `<span class="tag active">In Progress</span>` : "",
+    item.tier === "need"          ? `<span class="tag need">Need It</span>`    : "",
+    item.tier === "want"          ? `<span class="tag want">Want It</span>`    : "",
+    item.priority === "urgent"    ? `<span class="tag urgent">This Week</span>`: "",
+    item.priority === "active"    ? `<span class="tag active">Active</span>`   : "",
+    item.est                      ? `<span class="tag cost">${fmt(item.est)}</span>` : "",
   ].filter(Boolean).join("");
 
   return `
     <div class="item ${isDone ? "done" : ""}">
-      <button class="status-btn ${STATUS_CLASS[st]}" data-id="${item.id}" title="${STATUS_LABEL[st]} — tap to advance">${STATUS_ICON[st]}</button>
+      <button class="status-btn ${STATUS_CLS[st]}" data-id="${item.id}" title="${STATUS_LBL[st]} — tap to advance">${STATUS_ICON[st]}</button>
       <div class="item-body">
         <div class="item-name">${item.name}</div>
         ${item.note ? `<div class="item-note">${item.note}</div>` : ""}
