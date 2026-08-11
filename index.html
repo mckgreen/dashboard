@@ -501,6 +501,7 @@ const DATA = [
   { id:4,  type:"todo", group:"phase1", name:"Decide: front door vs entryway floor",     note:"Does moving the door affect the slab? Coordinate with floor crew", room:"general", priority:"",    est:null,  blockedBy:[]     },
   { id:5,  type:"todo", group:"phase1", name:"Pick front door style + design",           note:"Current lean: walnut flat-panel",                              room:"general",  priority:"",       est:null,  blockedBy:[4]    },
   { id:6,  type:"todo", group:"phase1", name:"Find front door contractors + quotes",     note:"3 quotes minimum",                                            room:"general",  priority:"",       est:4000,  blockedBy:[4,5]  },
+  { id:37, type:"todo", group:"phase2", name:"Send living-room layout measurements + sketch", note:"Needed for to-scale bird's-eye furniture layouts",             room:"living",  priority:"", est:null, blockedBy:[] },
   { id:32, type:"todo", group:"phase2", name:"Measure dimensions — couch",          note:"Blocked until floors done — measure living room space for couch sizing",  room:"living",  priority:"", est:null, blockedBy:[1] },
   { id:33, type:"todo", group:"phase2", name:"Measure dimensions — stovetop",       note:"Blocked until floors done — confirm range cutout width + depth",           room:"kitchen", priority:"", est:null, blockedBy:[1] },
   { id:34, type:"todo", group:"phase2", name:"Measure dimensions — center console", note:"Blocked until floors done — measure living room for console/TV unit",      room:"living",  priority:"", est:null, blockedBy:[1] },
@@ -662,6 +663,20 @@ const DETAILS = {
     decisions: [],
     measurements: ["Living room wall: 140\" long"],
     research: [],
+    links: [],
+  },
+  37: {
+    decisions: [],
+    measurements: [
+      "Overall interior room length × width (and ceiling height if it matters)",
+      "For each wall, clockwise from one chosen corner: door, window, archway, vent, radiator, and built-in locations; record each width and its distance from that corner",
+      "Door swing direction; fixed elements, outlets/TV connection, and any no-furniture zones",
+      "Existing furniture dimensions plus product links/dimensions for pieces under consideration"
+    ],
+    research: [
+      "A quick phone photo or rough hand sketch is helpful — it does not need to be polished.",
+      "Once received, Hermes will make 2–3 to-scale top-down furniture-layout options and check fit, walkways, door swings, and clearances."
+    ],
     links: [],
   },
   33: {
