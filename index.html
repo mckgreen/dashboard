@@ -257,6 +257,50 @@
   .drawer-link:hover { background: #e0edff; }
   .drawer-link-icon { font-size: 18px; }
   .drawer-empty { font-size: 13px; color: #b0a080; padding: 12px 0; }
+  /* Notes + user links editing */
+  .drawer-textarea {
+    width: 100%; min-height: 80px; padding: 10px 12px;
+    border: 1.5px solid #d8cebc; border-radius: 10px;
+    font-size: 13px; color: #2c2416; background: #faf8f4;
+    font-family: inherit; line-height: 1.5; resize: vertical; outline: none;
+  }
+  .drawer-textarea:focus { border-color: #8a7a5e; background: #fff; }
+  .drawer-save-note {
+    margin-top: 6px; padding: 7px 16px; background: #2c2416; border: none;
+    border-radius: 8px; font-size: 12px; color: #f5f0e8; cursor: pointer;
+    font-family: inherit; font-weight: 600; transition: opacity 0.15s;
+  }
+  .drawer-save-note:hover { opacity: 0.85; }
+  .drawer-save-note.saved { background: #4a8030; }
+  .ulink-row { display: flex; gap: 6px; margin-top: 6px; }
+  .ulink-inp {
+    flex: 1; padding: 8px 10px; border: 1.5px solid #d8cebc; border-radius: 8px;
+    font-size: 12px; background: #faf8f4; outline: none; font-family: inherit; color: #2c2416;
+  }
+  .ulink-inp:focus { border-color: #8a7a5e; }
+  .ulink-label-inp {
+    width: 110px; padding: 8px 10px; border: 1.5px solid #d8cebc; border-radius: 8px;
+    font-size: 12px; background: #faf8f4; outline: none; font-family: inherit; color: #2c2416;
+  }
+  .ulink-label-inp:focus { border-color: #8a7a5e; }
+  .ulink-add-btn {
+    padding: 8px 14px; background: #2c2416; border: none; border-radius: 8px;
+    font-size: 12px; color: #f5f0e8; cursor: pointer; font-family: inherit; font-weight: 600;
+    white-space: nowrap;
+  }
+  .ulink-add-btn:hover { opacity: 0.85; }
+  .ulink-existing { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .ulink-item {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+    background: #f0f8e8; border: 1.5px solid #b8d898; border-radius: 10px;
+  }
+  .ulink-item a { flex: 1; font-size: 13px; color: #2060a0; text-decoration: none; word-break: break-all; }
+  .ulink-item a:hover { text-decoration: underline; }
+  .ulink-del {
+    background: none; border: none; color: #c08060; cursor: pointer;
+    font-size: 15px; padding: 0 2px; line-height: 1; flex-shrink: 0;
+  }
+  .ulink-del:hover { color: #c03020; }
   /* make item bodies look tappable */
   .item-body { cursor: pointer; }
   .item-body:hover .item-name { color: #5a4a20; }
@@ -621,6 +665,8 @@ const STATUS_CLS  = { none:"s-none", active:"s-active", waiting:"s-waiting", don
 const urls      = JSON.parse(localStorage.getItem("reno_urls")      || "{}");
 const status    = JSON.parse(localStorage.getItem("reno_status")    || "{}");
 const qdecision = JSON.parse(localStorage.getItem("reno_qdecision") || "{}");
+const userNotes = JSON.parse(localStorage.getItem("reno_notes")     || "{}");
+const userLinks = JSON.parse(localStorage.getItem("reno_ulinks")    || "{}");
 
 function getStatus(id)     { return status[id] || "none"; }
 function isDone(id)        { return getStatus(id) === "done"; }
@@ -638,6 +684,8 @@ function save() {
   localStorage.setItem("reno_urls",      JSON.stringify(urls));
   localStorage.setItem("reno_status",    JSON.stringify(status));
   localStorage.setItem("reno_qdecision", JSON.stringify(qdecision));
+  localStorage.setItem("reno_notes",     JSON.stringify(userNotes));
+  localStorage.setItem("reno_ulinks",    JSON.stringify(userLinks));
 }
 
 // Returns all blockers for an item: task blockers + open question blockers
@@ -1005,10 +1053,70 @@ function openDrawer(id) {
     html = `<p class="drawer-empty">No additional details yet. Hermes will add research, measurements, and links here as you work through this item.</p>`;
   }
 
+  // ── User Notes (editable) ──
+  const savedNote = userNotes[id] || "";
+  html += `<div class="drawer-section">
+    <div class="drawer-section-label">📝 My Notes</div>
+    <textarea class="drawer-textarea" id="drawer-note-${id}" placeholder="Add your own notes here…">${savedNote}</textarea>
+    <button class="drawer-save-note" id="drawer-note-btn-${id}">Save Note</button>
+  </div>`;
+
+  // ── User Links (editable) ──
+  const savedLinks = userLinks[id] || [];
+  const ulinkItems = savedLinks.length ? `<div class="ulink-existing" id="ulink-list-${id}">
+    ${savedLinks.map((l, i) => `<div class="ulink-item" data-idx="${i}">
+      <a href="${l.url}" target="_blank">${l.label || l.url}</a>
+      <button class="ulink-del" data-id="${id}" data-idx="${i}" title="Remove">✕</button>
+    </div>`).join("")}
+  </div>` : `<div class="ulink-existing" id="ulink-list-${id}"></div>`;
+
+  html += `<div class="drawer-section">
+    <div class="drawer-section-label">🔗 My Links</div>
+    ${ulinkItems}
+    <div class="ulink-row">
+      <input class="ulink-label-inp" id="ulink-label-${id}" placeholder="Label (optional)" />
+      <input class="ulink-inp" id="ulink-url-${id}" type="url" placeholder="https://…" />
+      <button class="ulink-add-btn" data-id="${id}">Add</button>
+    </div>
+  </div>`;
+
   document.getElementById("drawer-body").innerHTML = html;
   document.getElementById("drawer").classList.add("open");
   document.getElementById("drawer-overlay").classList.add("open");
   document.body.style.overflow = "hidden";
+
+  // Save note handler
+  const noteBtn = document.getElementById(`drawer-note-btn-${id}`);
+  noteBtn.addEventListener("click", () => {
+    const val = document.getElementById(`drawer-note-${id}`).value;
+    userNotes[id] = val;
+    save();
+    noteBtn.textContent = "Saved ✓";
+    noteBtn.classList.add("saved");
+    setTimeout(() => { noteBtn.textContent = "Save Note"; noteBtn.classList.remove("saved"); }, 1800);
+  });
+
+  // Add link handler
+  document.querySelector(`.ulink-add-btn[data-id="${id}"]`).addEventListener("click", () => {
+    const urlVal   = document.getElementById(`ulink-url-${id}`).value.trim();
+    const labelVal = document.getElementById(`ulink-label-${id}`).value.trim();
+    if (!urlVal) return;
+    if (!userLinks[id]) userLinks[id] = [];
+    userLinks[id].push({ label: labelVal || urlVal, url: urlVal });
+    save();
+    openDrawer(id); // re-render drawer with new link
+  });
+
+  // Delete link handlers
+  document.querySelectorAll(`.ulink-del[data-id="${id}"]`).forEach(btn => {
+    btn.addEventListener("click", () => {
+      const idx = +btn.dataset.idx;
+      userLinks[id].splice(idx, 1);
+      save();
+      openDrawer(id);
+    });
+  });
+
 }
 
 function closeDrawer() {
