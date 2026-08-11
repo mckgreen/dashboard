@@ -198,6 +198,69 @@
   .url-inp:focus { border-color: #8a7a5e; }
   .url-save-btn { background: #2c2416; border: none; border-radius: 7px; padding: 5px 12px; font-size: 12px; color: #f5f0e8; cursor: pointer; font-family: inherit; }
 
+  /* ── DRAWER ── */
+  #drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  }
+  #drawer-overlay.open { opacity: 1; pointer-events: all; }
+  #drawer {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 160;
+    background: #fff; border-radius: 22px 22px 0 0;
+    max-height: 88vh; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0,0.15,1);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.12);
+  }
+  #drawer.open { transform: translateY(0); }
+  @media (min-width: 641px) {
+    #drawer { max-width: 540px; left: 50%; right: auto; transform: translateX(-50%) translateY(100%); border-radius: 22px 22px 0 0; }
+    #drawer.open { transform: translateX(-50%) translateY(0); }
+  }
+  .drawer-handle { width: 38px; height: 4px; background: #e0d8cc; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }
+  .drawer-header {
+    padding: 10px 18px 14px; border-bottom: 1px solid #ece6da;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-shrink: 0;
+  }
+  .drawer-title-wrap { flex: 1; }
+  .drawer-title { font-size: 16px; font-weight: 700; color: #1e1a10; line-height: 1.3; }
+  .drawer-subtitle { font-size: 12px; color: #9a8a6a; margin-top: 2px; }
+  .drawer-close {
+    width: 28px; height: 28px; border-radius: 50%; border: none;
+    background: #f0ece0; color: #8a7a5e; font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-family: inherit; font-weight: 700; line-height: 1;
+  }
+  .drawer-close:hover { background: #e0d8cc; }
+  .drawer-body { overflow-y: auto; padding: 16px 18px 32px; flex: 1; }
+  .drawer-section { margin-bottom: 20px; }
+  .drawer-section:last-child { margin-bottom: 0; }
+  .drawer-section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase;
+    color: #9a8a6a; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .drawer-section-label::after { content: ""; flex: 1; height: 1px; background: #ece6da; }
+  .drawer-text { font-size: 14px; color: #2c2416; line-height: 1.6; }
+  .drawer-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+  .drawer-list li {
+    font-size: 13px; color: #2c2416; line-height: 1.5; padding: 7px 0;
+    border-bottom: 1px solid #f0ece0; display: flex; gap: 8px; align-items: flex-start;
+  }
+  .drawer-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .drawer-list li::before { content: "—"; color: #c8b89a; flex-shrink: 0; margin-top: 1px; }
+  .drawer-links { display: flex; flex-direction: column; gap: 8px; }
+  .drawer-link {
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    background: #f0f6ff; border: 1.5px solid #c0d4f0; border-radius: 12px;
+    text-decoration: none; color: #2060a0; font-size: 13px; font-weight: 500; transition: background 0.15s;
+  }
+  .drawer-link:hover { background: #e0edff; }
+  .drawer-link-icon { font-size: 18px; }
+  .drawer-empty { font-size: 13px; color: #b0a080; padding: 12px 0; }
+  /* make item bodies look tappable */
+  .item-body { cursor: pointer; }
+  .item-body:hover .item-name { color: #5a4a20; }
+  .item-chevron { font-size: 13px; color: #c8b89a; margin-left: auto; flex-shrink: 0; padding-left: 4px; }
   /* ── DECISION CARDS ── */
   .decision-card {
     background: #fff8e0; border: 1.5px solid #f0d880; border-radius: 12px;
@@ -305,6 +368,20 @@
     <div class="empty" id="empty" style="display:none">No items match this filter.</div>
   </div>
 
+</div><!-- /app -->
+
+<!-- DRAWER -->
+<div id="drawer-overlay"></div>
+<div id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-header">
+    <div class="drawer-title-wrap">
+      <div class="drawer-title" id="drawer-title"></div>
+      <div class="drawer-subtitle" id="drawer-subtitle"></div>
+    </div>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -424,6 +501,101 @@ const QUESTIONS = [
     blocksItems: [10],
   },
 ];
+
+// ── ITEM DETAILS ──────────────────────────────────────────────────────────────
+// Each entry: { measurements, decisions, research, links: [{label, url}] }
+const DETAILS = {
+  1: {
+    decisions: ["Final cost: $9,335"],
+    measurements: [],
+    research: [],
+    links: [],
+  },
+  3: {
+    decisions: ["Confirmed 30\" wide"],
+    measurements: ["Range width: 30\""],
+    research: [],
+    links: [],
+  },
+  5: {
+    decisions: ["Current lean: walnut flat-panel"],
+    measurements: [],
+    research: [],
+    links: [],
+  },
+  7: {
+    decisions: [],
+    measurements: [],
+    research: [],
+    links: [],
+  },
+  9: {
+    decisions: [],
+    measurements: [],
+    research: ["Countertop material comparison researched — see Decisions tab for options: Quartz (zero maintenance, no sealing, bad with heat), Quartzite (annual sealing, heat safe, marble look), Granite (every 1-3yr sealing, very durable), Marble (high maintenance, etches from acid — not recommended), Soapstone (no sealing, heat proof, dark palette only), Porcelain (zero maintenance, modern look)"],
+    links: [],
+  },
+  11: {
+    decisions: [],
+    measurements: [],
+    research: ["Kitchen vision: walnut floor-to-ceiling cabinets, farm sink, wood-paneled fridge, open shelving above sink", "Style direction: Warm Modern Japanese"],
+    links: [],
+  },
+  20: {
+    decisions: ["Size confirmed: 30\" wide", "Type: slide-in, dual fuel (gas cooktop + electric oven)"],
+    measurements: ["Existing range: 30\" wide"],
+    research: [
+      "🥇 Wolf DF30450 — $3,500–4,500 | Best dual fuel overall. 20,000 BTU, VertiFlow dual convection, 7\" touchscreen, 50 guided cooking modes. Red knobs iconic.",
+      "🥈 Bertazzoni — $1,800–2,500 | Best mid-range value. Italian design, warm aesthetic. Less powerful burners.",
+      "🥉 BlueStar BSDF304B — $2,500–4,500 | Most powerful (25k BTU) + 1,000+ custom colors. Open burners = harder to clean.",
+      "Also: Thermador $3,500–5,000 | Miele $4,500–6,000 (steam oven — most high-tech)",
+    ],
+    links: [
+      { label: "Wolf DF30450", url: "https://www.subzero-wolf.com/cooking/ranges" },
+      { label: "BlueStar 30\" Dual Fuel", url: "https://www.blustarrange.com" },
+    ],
+  },
+  24: {
+    decisions: [],
+    measurements: ["Space: 34\" wide × 10\" deep (top of stairs)"],
+    research: ["Looking for shoe + purse storage. Nice quality, not cheap. Narrow 10\" depth is the main constraint."],
+    links: [
+      { label: "Corrigan Studio 16-pair Cabinet — Wayfair (interested)", url: "https://www.wayfair.com/storage-organization/pdp/corrigan-studio-16-pair-shoe-storage-cabinet-with-2-flip-drawers-w116674855.html" },
+    ],
+  },
+  25: {
+    decisions: [],
+    measurements: [],
+    research: [],
+    links: [],
+  },
+  28: {
+    decisions: ["Decided: Bofea Plug-in Wall Sconce — Dark Red & Gold × 2", "Purchased for $351"],
+    measurements: [],
+    research: [],
+    links: [
+      { label: "Bofea Plug-in Sconce — Pinlighting", url: "https://pinlighting.com/products/bofea-plug-in-wall-sconce" },
+    ],
+  },
+  32: {
+    decisions: [],
+    measurements: ["Living room wall: 140\" long"],
+    research: [],
+    links: [],
+  },
+  33: {
+    decisions: ["Confirmed: 30\" wide"],
+    measurements: ["Range cutout: 30\" wide"],
+    research: [],
+    links: [],
+  },
+  35: {
+    decisions: [],
+    measurements: [],
+    research: ["Door at top of stairs needs repair/adjustment"],
+    links: [],
+  },
+};
 
 // ── LOOKUP MAPS ───────────────────────────────────────────────────────────────
 const ROOM_LABELS = {
@@ -686,6 +858,7 @@ function attachHandlers() {
     el.addEventListener("click", () => showUrlInput(+el.dataset.id)));
   document.querySelectorAll(".url-save-btn").forEach(el =>
     el.addEventListener("click", () => saveUrl(+el.dataset.id)));
+  attachBodyHandlers();
 }
 
 function renderItem(item) {
@@ -694,6 +867,7 @@ function renderItem(item) {
   const itemUrl  = urls[item.id] || item.url || "";
   const blockers = getBlockers(item);
   const isBlocked = blockers.length > 0 && !isDoneI;
+  const hasDetail = !!DETAILS[item.id];
 
   const tags = [
     `<span class="tag room">${ROOM_LABELS[item.room]}</span>`,
@@ -711,10 +885,13 @@ function renderItem(item) {
       </span>`).join("")}
     </div>` : "";
 
-  return `<div class="item${isDoneI ? " done" : ""}${isBlocked ? " blocked" : ""}">
+  return `<div class="item${isDoneI ? " done" : ""}${isBlocked ? " blocked" : ""}" style="display:flex;align-items:flex-start;gap:10px;">
     <button class="status-btn ${STATUS_CLS[st]}" data-id="${item.id}" title="${STATUS_LBL[st]}">${STATUS_ICON[st]}</button>
-    <div class="item-body">
-      <div class="item-name">${item.name}</div>
+    <div class="item-body" data-id="${item.id}" style="flex:1;min-width:0;">
+      <div style="display:flex;align-items:flex-start;gap:4px;">
+        <div class="item-name" style="flex:1;">${item.name}</div>
+        ${hasDetail ? `<span class="item-chevron">›</span>` : ""}
+      </div>
       ${item.note ? `<div class="item-note">${item.note}</div>` : ""}
       <div class="item-tags">${tags}</div>
       ${blockersHtml}
@@ -766,6 +943,93 @@ document.getElementById("roomBar").addEventListener("click", e => {
   document.querySelectorAll(".room-btn").forEach(x => x.classList.toggle("active", x === b));
   render();
 });
+
+// ── DRAWER ────────────────────────────────────────────────────────────────────
+function openDrawer(id) {
+  const item = DATA.find(d => d.id === id);
+  if (!item) return;
+  const detail = DETAILS[id] || {};
+  const { measurements = [], decisions = [], research = [], links = [] } = detail;
+
+  document.getElementById("drawer-title").textContent = item.name;
+  document.getElementById("drawer-subtitle").textContent = ROOM_LABELS[item.room] || "";
+
+  let html = "";
+
+  if (decisions.length) {
+    html += `<div class="drawer-section">
+      <div class="drawer-section-label">✓ Decisions & Confirmed</div>
+      <ul class="drawer-list">${decisions.map(d => `<li>${d}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  if (measurements.length) {
+    html += `<div class="drawer-section">
+      <div class="drawer-section-label">📐 Measurements</div>
+      <ul class="drawer-list">${measurements.map(m => `<li>${m}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  if (research.length) {
+    html += `<div class="drawer-section">
+      <div class="drawer-section-label">🔍 Research</div>
+      <ul class="drawer-list">${research.map(r => `<li>${r}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  const allLinks = [...links];
+  const itemUrl = urls[id] || item.url || "";
+  if (itemUrl && !allLinks.find(l => l.url === itemUrl)) {
+    allLinks.unshift({ label: itemUrl.replace(/^https?:\/\//, "").split("/")[0], url: itemUrl });
+  }
+  if (allLinks.length) {
+    html += `<div class="drawer-section">
+      <div class="drawer-section-label">🔗 Links</div>
+      <div class="drawer-links">${allLinks.map(l =>
+        `<a class="drawer-link" href="${l.url}" target="_blank">
+          <span class="drawer-link-icon">↗</span><span>${l.label}</span>
+        </a>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  const blockers = getBlockers(item);
+  if (blockers.length) {
+    html += `<div class="drawer-section">
+      <div class="drawer-section-label">🔒 Blocked By</div>
+      <ul class="drawer-list">${blockers.map(b => `<li>${b.label}</li>`).join("")}</ul>
+    </div>`;
+  }
+
+  if (!html) {
+    html = `<p class="drawer-empty">No additional details yet. Hermes will add research, measurements, and links here as you work through this item.</p>`;
+  }
+
+  document.getElementById("drawer-body").innerHTML = html;
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("drawer-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeDrawer() {
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("drawer-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+document.getElementById("drawer-overlay").addEventListener("click", closeDrawer);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+
+function attachBodyHandlers() {
+  document.querySelectorAll(".item-body[data-id]").forEach(el => {
+    el.addEventListener("click", e => {
+      if (e.target.closest(".add-url") || e.target.closest(".url-link") || e.target.closest(".url-area")) return;
+      const id = +el.dataset.id;
+      if (DETAILS[id]) openDrawer(id);
+    });
+  });
+}
 
 render();
 </script>
