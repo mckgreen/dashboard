@@ -301,6 +301,33 @@
     font-size: 15px; padding: 0 2px; line-height: 1; flex-shrink: 0;
   }
   .ulink-del:hover { color: #c03020; }
+  /* Edit mode */
+  .drawer-edit-btn {
+    padding: 5px 12px; background: transparent; border: 1.5px solid #d8cebc;
+    border-radius: 8px; font-size: 12px; color: #8a7a5e; cursor: pointer;
+    font-family: inherit; font-weight: 500; transition: all 0.15s; white-space: nowrap;
+  }
+  .drawer-edit-btn:hover { border-color: #8a7a5e; color: #2c2416; }
+  .drawer-edit-btn.editing { background: #2c2416; border-color: #2c2416; color: #f5f0e8; }
+  .edit-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding: 14px 16px; background: #faf8f4; border: 1.5px solid #e0d8cc; border-radius: 12px; }
+  .edit-field { display: flex; flex-direction: column; gap: 4px; }
+  .edit-label { font-size: 10px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; color: #9a8a6a; }
+  .edit-inp {
+    padding: 9px 12px; border: 1.5px solid #d8cebc; border-radius: 8px;
+    font-size: 13px; color: #2c2416; background: #fff; outline: none; font-family: inherit;
+  }
+  .edit-inp:focus { border-color: #8a7a5e; }
+  .edit-actions { display: flex; gap: 8px; margin-top: 2px; }
+  .edit-save {
+    flex: 1; padding: 9px; background: #2c2416; border: none; border-radius: 8px;
+    font-size: 13px; color: #f5f0e8; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .edit-save:hover { opacity: 0.87; }
+  .edit-cancel {
+    padding: 9px 16px; background: transparent; border: 1.5px solid #d8cebc; border-radius: 8px;
+    font-size: 13px; color: #8a7a5e; cursor: pointer; font-family: inherit;
+  }
+  .edit-cancel:hover { border-color: #8a7a5e; }
   /* make item bodies look tappable */
   .item-body { cursor: pointer; }
   .item-body:hover .item-name { color: #5a4a20; }
@@ -423,6 +450,7 @@
       <div class="drawer-title" id="drawer-title"></div>
       <div class="drawer-subtitle" id="drawer-subtitle"></div>
     </div>
+    <button class="drawer-edit-btn" id="drawer-edit-btn">Edit</button>
     <button class="drawer-close" id="drawer-close">✕</button>
   </div>
   <div class="drawer-body" id="drawer-body"></div>
@@ -667,6 +695,7 @@ const status    = JSON.parse(localStorage.getItem("reno_status")    || "{}");
 const qdecision = JSON.parse(localStorage.getItem("reno_qdecision") || "{}");
 const userNotes = JSON.parse(localStorage.getItem("reno_notes")     || "{}");
 const userLinks = JSON.parse(localStorage.getItem("reno_ulinks")    || "{}");
+const userEdits = JSON.parse(localStorage.getItem("reno_edits")     || "{}");
 
 function getStatus(id)     { return status[id] || "none"; }
 function isDone(id)        { return getStatus(id) === "done"; }
@@ -686,6 +715,7 @@ function save() {
   localStorage.setItem("reno_qdecision", JSON.stringify(qdecision));
   localStorage.setItem("reno_notes",     JSON.stringify(userNotes));
   localStorage.setItem("reno_ulinks",    JSON.stringify(userLinks));
+  localStorage.setItem("reno_edits",     JSON.stringify(userEdits));
 }
 
 // Returns all blockers for an item: task blockers + open question blockers
@@ -708,16 +738,17 @@ const fmt = n => n >= 1000 ? `$${(n / 1000).toFixed(n % 1000 === 0 ? 0 : 1)}k` :
 function budgetByRoom() {
   const rooms = {};
   DATA.forEach(i => {
-    if (!i.est || i.est === 0) return;
+    const est = (userEdits[i.id] || {}).est ?? i.est;
+    if (!est || est === 0) return;
     if (!rooms[i.room]) rooms[i.room] = { est: 0, spent: 0 };
-    rooms[i.room].est += i.est;
-    if (isDone(i.id)) rooms[i.room].spent += i.est;
+    rooms[i.room].est += est;
+    if (isDone(i.id)) rooms[i.room].spent += est;
   });
   return rooms;
 }
 
 function renderBudgetCard() {
-  const totalEst  = DATA.reduce((s, i) => s + (i.est || 0), 0);
+  const totalEst  = DATA.reduce((s, i) => s + ((userEdits[i.id] || {}).est ?? i.est || 0), 0);
   const totalDone = DATA.filter(i => isDone(i.id)).reduce((s, i) => s + (i.est || 0), 0);
   const pct = Math.min(100, (totalEst / BUDGET) * 100);
   const cls = totalEst > BUDGET ? "over" : totalEst > BUDGET * 0.85 ? "warn" : "";
@@ -916,6 +947,10 @@ function renderItem(item) {
   const blockers = getBlockers(item);
   const isBlocked = blockers.length > 0 && !isDoneI;
   const hasDetail = !!DETAILS[item.id];
+  const edits    = userEdits[item.id] || {};
+  const name     = edits.name ?? item.name;
+  const note     = edits.note ?? item.note ?? "";
+  const est      = edits.est  ?? item.est;
 
   const tags = [
     `<span class="tag room">${ROOM_LABELS[item.room]}</span>`,
@@ -923,7 +958,7 @@ function renderItem(item) {
     item.tier === "want"       ? `<span class="tag want">Want It</span>`    : "",
     item.priority === "urgent" ? `<span class="tag urgent">This Week</span>`: "",
     item.priority === "active" ? `<span class="tag active">Active</span>`   : "",
-    item.est && item.est > 0   ? `<span class="tag cost">${fmt(item.est)}</span>` : "",
+    item.est && item.est > 0   ? `<span class="tag cost">${fmt(est)}</span>` : "",
   ].filter(Boolean).join("");
 
   const blockersHtml = isBlocked ? `
@@ -937,10 +972,10 @@ function renderItem(item) {
     <button class="status-btn ${STATUS_CLS[st]}" data-id="${item.id}" title="${STATUS_LBL[st]}">${STATUS_ICON[st]}</button>
     <div class="item-body" data-id="${item.id}" style="flex:1;min-width:0;">
       <div style="display:flex;align-items:flex-start;gap:4px;">
-        <div class="item-name" style="flex:1;">${item.name}</div>
+        <div class="item-name" style="flex:1;">${name}</div>
         ${hasDetail ? `<span class="item-chevron">›</span>` : ""}
       </div>
-      ${item.note ? `<div class="item-note">${item.note}</div>` : ""}
+      ${note ? `<div class="item-note">${note}</div>` : ""}
       <div class="item-tags">${tags}</div>
       ${blockersHtml}
       ${item.type === "tobuy" ? `<div class="url-area" id="url-${item.id}">
@@ -1001,6 +1036,17 @@ function openDrawer(id) {
 
   document.getElementById("drawer-title").textContent = item.name;
   document.getElementById("drawer-subtitle").textContent = ROOM_LABELS[item.room] || "";
+
+  // Wire Edit button
+  const editBtn = document.getElementById("drawer-edit-btn");
+  let editMode = false;
+  editBtn.addEventListener("click", () => {
+    editMode = !editMode;
+    editBtn.textContent = editMode ? "Done" : "Edit";
+    editBtn.classList.toggle("editing", editMode);
+    if (editMode) showEditForm(id);
+    else           removeEditForm();
+  });
 
   let html = "";
 
@@ -1117,6 +1163,65 @@ function openDrawer(id) {
     });
   });
 
+}
+
+// ── EDIT FORM ─────────────────────────────────────────────────────────────────
+function showEditForm(id) {
+  const item  = DATA.find(d => d.id === id);
+  const edits = userEdits[id] || {};
+  const name  = edits.name  ?? item.name;
+  const note  = edits.note  ?? item.note  ?? "";
+  const est   = edits.est   ?? item.est   ?? "";
+
+  const form = document.createElement("div");
+  form.id = "edit-form";
+  form.className = "edit-form";
+  form.innerHTML = `
+    <div class="edit-field">
+      <div class="edit-label">Task Name</div>
+      <input class="edit-inp" id="edit-name" value="${name.replace(/"/g,'&quot;')}" />
+    </div>
+    <div class="edit-field">
+      <div class="edit-label">Note / Description</div>
+      <input class="edit-inp" id="edit-note" value="${note.replace(/"/g,'&quot;')}" placeholder="Add a note…" />
+    </div>
+    <div class="edit-field">
+      <div class="edit-label">Estimated Cost ($)</div>
+      <input class="edit-inp" id="edit-est" type="number" value="${est}" placeholder="0" />
+    </div>
+    <div class="edit-actions">
+      <button class="edit-save" id="edit-save-btn">Save Changes</button>
+      <button class="edit-cancel" id="edit-cancel-btn">Cancel</button>
+    </div>`;
+
+  const body = document.getElementById("drawer-body");
+  body.insertBefore(form, body.firstChild);
+
+  document.getElementById("edit-save-btn").addEventListener("click", () => {
+    const n = document.getElementById("edit-name").value.trim();
+    const o = document.getElementById("edit-note").value.trim();
+    const e = parseFloat(document.getElementById("edit-est").value) || null;
+    if (!n) return;
+    userEdits[id] = { name: n, note: o, est: e };
+    save();
+    // Update drawer title live
+    document.getElementById("drawer-title").textContent = n;
+    // Flip edit button back
+    const eb = document.getElementById("drawer-edit-btn");
+    eb.textContent = "Edit"; eb.classList.remove("editing");
+    removeEditForm();
+    render(); // refresh list with new name/note/cost
+  });
+  document.getElementById("edit-cancel-btn").addEventListener("click", () => {
+    const eb = document.getElementById("drawer-edit-btn");
+    eb.textContent = "Edit"; eb.classList.remove("editing");
+    removeEditForm();
+  });
+}
+
+function removeEditForm() {
+  const f = document.getElementById("edit-form");
+  if (f) f.remove();
 }
 
 function closeDrawer() {
