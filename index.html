@@ -756,7 +756,7 @@ function budgetByRoom() {
 }
 
 function renderBudgetCard() {
-  const totalEst  = DATA.reduce((s, i) => s + ((userEdits[i.id] || {}).est ?? i.est || 0), 0);
+  const totalEst  = DATA.reduce((s, i) => s + (((userEdits[i.id] || {}).est ?? i.est) || 0), 0);
   const totalDone = DATA.filter(i => isDone(i.id)).reduce((s, i) => s + (i.est || 0), 0);
   const pct = Math.min(100, (totalEst / BUDGET) * 100);
   const cls = totalEst > BUDGET ? "over" : totalEst > BUDGET * 0.85 ? "warn" : "";
