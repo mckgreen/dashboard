@@ -503,6 +503,9 @@ const DATA = [
   { id:6,  type:"todo", group:"phase1", name:"Find front door contractors + quotes",     note:"3 quotes minimum",                                            room:"general",  priority:"",       est:4000,  blockedBy:[4,5]  },
   { id:37, type:"todo", group:"phase2", name:"Send living-room layout measurements + sketch", note:"Needed for to-scale bird's-eye furniture layouts",             room:"living",  priority:"", est:null, blockedBy:[] },
   { id:39, type:"todo", group:"phase2", name:"Research replacing over-range microwave with vent hood", note:"Confirm ducting and installation requirements",                room:"kitchen", priority:"", est:null, blockedBy:[] },
+  { id:40, type:"todo", group:"phase2", name:"Schedule walk-through with Evan",           note:"Use task details as the running agenda",                       room:"general", priority:"", est:null, blockedBy:[] },
+  { id:41, type:"todo", group:"phase2", name:"Create Emma Chamberlain–inspired kitchen direction + mockup", note:"For discussion with Evan",                    room:"kitchen", priority:"", est:null, blockedBy:[] },
+  { id:43, type:"todo", group:"phase2", name:"Create house reference document",            note:"Record finishes, paint colors, floors, and key house facts",  room:"general", priority:"", est:null, blockedBy:[] },
   { id:32, type:"todo", group:"phase2", name:"Measure dimensions — couch",          note:"Blocked until floors done — measure living room space for couch sizing",  room:"living",  priority:"", est:null, blockedBy:[1] },
   { id:33, type:"todo", group:"phase2", name:"Measure dimensions — stovetop",       note:"Blocked until floors done — confirm range cutout width + depth",           room:"kitchen", priority:"", est:null, blockedBy:[1] },
   { id:34, type:"todo", group:"phase2", name:"Measure dimensions — center console", note:"Blocked until floors done — measure living room for console/TV unit",      room:"living",  priority:"", est:null, blockedBy:[1] },
@@ -536,6 +539,7 @@ const DATA = [
   { id:29, type:"tobuy", tier:"want", name:"Art",                                        note:"",                                                           room:"general",  url:"", est:500,   blockedBy:[]    },
   { id:30, type:"tobuy", tier:"want", name:"Cutlery + serveware",                        note:"",                                                           room:"kitchen",  url:"", est:300,   blockedBy:[]    },
   { id:31, type:"tobuy", tier:"want", name:"Upstairs bathroom curtains",                 note:"",                                                           room:"bathroom", url:"", est:150,   blockedBy:[]    },
+  { id:42, type:"tobuy", tier:"want", name:"New bathroom mirror",                         note:"",                                                           room:"bathroom", url:"", est:null,  blockedBy:[]    },
 ];
 
 // ── OPEN DECISIONS ────────────────────────────────────────────────────────────
@@ -662,7 +666,7 @@ const DETAILS = {
     ],
   },
   39: {
-    decisions: [],
+    decisions: ["Current assumption: over-range microwave recirculates air rather than exhausting outdoors — verify before selecting a hood."],
     measurements: [
       "Measure current microwave width, height, depth, and mounting/cabinet clearances.",
       "Check cabinet width/height/clearance above the range and range-to-hood clearance requirements.",
@@ -672,6 +676,37 @@ const DETAILS = {
       "First determine whether the current microwave is truly ducted outdoors, recirculating, or venting improperly into a cabinet/room. A recirculating setup is not equivalent to an exterior-venting hood.",
       "A proper hood normally needs an appropriately sized smooth metal duct, a short/direct route outdoors, exterior cap, electrical power, and a hood sized to the cooking surface. Cabinet changes, drywall work, and a new exterior wall/roof penetration may be needed if no usable duct exists.",
       "Confirm Los Angeles permit/code requirements with a licensed installer. Higher-CFM residential hoods may trigger makeup-air requirements; the exact threshold and application depend on local code and installation."
+    ],
+    links: [],
+  },
+  40: {
+    decisions: [],
+    measurements: [],
+    research: [
+      "Floors + trim: ask about matching the baseboards to the floor color; reference Emma Chamberlain's Architectural Digest home tour, where the floors and baseboards read as one continuous tone.",
+      "Kitchen: review the Emma Chamberlain–inspired kitchen direction/mockup and get Evan's read on what fits this house, the scope, and sequencing.",
+      "Front door: discuss the front-door direction, its relationship to the entry, and what would best support the overall house character.",
+      "Whole-house vibe: ask how to make the home feel cohesive—especially a natural-wood banister similar to yours but slightly darker, warm wood continuity, and an overall relaxed architectural feeling.",
+      "Use of space: ask for opportunities to improve flow, storage, and furniture/layout use room by room.",
+      "Bedroom: leave room to discuss possible bedroom needs and priorities once you have a clearer question or reference."
+    ],
+    links: [],
+  },
+  41: {
+    decisions: [],
+    measurements: [],
+    research: [
+      "Create an inspiration direction and mockup—not a literal copy—drawing from the Emma Chamberlain AD kitchen/home-tour cues that fit the house.",
+      "Starting cues: warm natural-wood continuity, floor-tone baseboards, a slightly darker natural-wood banister, and an overall cohesive, relaxed architectural feel. Confirm specific kitchen imagery/layout before generating."
+    ],
+    links: [],
+  },
+  43: {
+    decisions: [],
+    measurements: [],
+    research: [
+      "Create a durable house reference: room-by-room paint colors (brand, collection, color name/code, sheen, and date applied); floors (species/material, stain/color, finish, installer, and care instructions); trim/baseboards; walls; countertops; cabinets; hardware; tile; lighting; appliances; and plumbing fixtures.",
+      "Also record key dimensions, warranty/receipt links, contractor/vendor contacts, permits, and decisions so future sourcing and repairs start from a reliable reference."
     ],
     links: [],
   },
